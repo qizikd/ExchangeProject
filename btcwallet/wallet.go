@@ -6,9 +6,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"fmt"
+	"github.com/btcsuite/golangcrypto/ripemd160"
 	"log"
-
-	"golang.org/x/crypto/ripemd160"
 )
 
 const version = byte(0x00)
@@ -28,7 +27,7 @@ func NewWallet() *Wallet {
 	return &wallet
 }
 
-func NewWalletByPrivate(private ecdsa.PrivateKey)  *Wallet {
+func NewWalletByPrivate(private ecdsa.PrivateKey) *Wallet {
 	d := private.D.Bytes()
 	b := make([]byte, 0, privKeyBytesLen)
 	priKey := paddedAppend(privKeyBytesLen, b, d)
@@ -37,8 +36,8 @@ func NewWalletByPrivate(private ecdsa.PrivateKey)  *Wallet {
 	return &wallet
 }
 
-func NewWalletByCurve(c elliptic.Curve) *Wallet{
-	fmt.Println("CurveParams2: ",c.Params())
+func NewWalletByCurve(c elliptic.Curve) *Wallet {
+	fmt.Println("CurveParams2: ", c.Params())
 	private, err := ecdsa.GenerateKey(c, rand.Reader)
 	if err != nil {
 		log.Panic(err)
