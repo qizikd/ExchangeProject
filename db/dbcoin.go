@@ -1,16 +1,16 @@
 package db
 
 import (
-	"ExchangeProject/core/mysql"
 	"errors"
+	"github.com/ExchangeProject/core/mysql"
 )
 
-func AddCoinAddress(appid string,userid string,coin string,privatekey string,address string)  (err error){
-	exist, _, err := IsCoinAddressExist(appid,userid,coin)
-	if err != nil || exist{
+func AddCoinAddress(appid string, userid string, coin string, privatekey string, address string) (err error) {
+	exist, _, err := IsCoinAddressExist(appid, userid, coin)
+	if err != nil || exist {
 		return
 	}
-	conn , err := mysql.GetConn()
+	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
@@ -18,39 +18,39 @@ func AddCoinAddress(appid string,userid string,coin string,privatekey string,add
 	if err != nil {
 		return
 	}
-	_, err = stmt.Exec(appid,userid,coin,privatekey,address)
+	_, err = stmt.Exec(appid, userid, coin, privatekey, address)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func IsCoinAddressExist(appid string,userid string,coin string) (exist bool,coinaddress string,err error) {
-	conn , err := mysql.GetConn()
+func IsCoinAddressExist(appid string, userid string, coin string) (exist bool, coinaddress string, err error) {
+	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
-	stmt , err := conn.Prepare("select address from coinaddress where appid=? and userid=? and coin=?")
+	stmt, err := conn.Prepare("select address from coinaddress where appid=? and userid=? and coin=?")
 	if err != nil {
 		return
 	}
-	rows, err := stmt.Query(appid,userid,coin)
+	rows, err := stmt.Query(appid, userid, coin)
 	if err != nil {
 		return
 	}
 	exist = rows.Next()
-	if exist{
+	if exist {
 		rows.Scan(&coinaddress)
 	}
 	return
 }
 
-func GetCoinIndex(coin string) (coinindex int,err error) {
-	conn , err := mysql.GetConn()
+func GetCoinIndex(coin string) (coinindex int, err error) {
+	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
-	stmt , err := conn.Prepare("select coinindex from coin where coin=?")
+	stmt, err := conn.Prepare("select coinindex from coin where coin=?")
 	if err != nil {
 		return
 	}
@@ -59,9 +59,9 @@ func GetCoinIndex(coin string) (coinindex int,err error) {
 		return
 	}
 
-	if rows.Next(){
+	if rows.Next() {
 		rows.Scan(&coinindex)
-	}else {
+	} else {
 		err = errors.New("当前数字货币不支持")
 	}
 	return

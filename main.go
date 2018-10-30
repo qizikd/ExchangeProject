@@ -1,14 +1,14 @@
 package main
 
 import (
-	"ExchangeProject/user"
+	"github.com/ExchangeProject/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func main()  {
+func main() {
 	router := gin.Default()
-	router.GET("/", func(c *gin.Context){
+	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello, World!")
 	})
 	router.GET("/user/create", user.New)

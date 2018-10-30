@@ -1,11 +1,11 @@
 package db
 
 import (
-	"ExchangeProject/core/mysql"
+	"github.com/ExchangeProject/core/mysql"
 )
 
-func InsertUser(appid string,userid string,mnemonic string) (err error) {
-	conn , err := mysql.GetConn()
+func InsertUser(appid string, userid string, mnemonic string) (err error) {
+	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
@@ -13,25 +13,25 @@ func InsertUser(appid string,userid string,mnemonic string) (err error) {
 	if err != nil {
 		return
 	}
-	_, err = stmt.Exec(appid,userid,mnemonic)
+	_, err = stmt.Exec(appid, userid, mnemonic)
 	return
 }
 
-func IsExistByUserId(appid string,userid string) (exist bool,mnemonic string,err error) {
-	conn , err := mysql.GetConn()
-	if err != nil {
-		 return
-	}
-	stmt , err := conn.Prepare("select mnemonic from user where appid=? and userid=?")
+func IsExistByUserId(appid string, userid string) (exist bool, mnemonic string, err error) {
+	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
-	rows, err := stmt.Query(appid,userid)
+	stmt, err := conn.Prepare("select mnemonic from user where appid=? and userid=?")
+	if err != nil {
+		return
+	}
+	rows, err := stmt.Query(appid, userid)
 	if err != nil {
 		return
 	}
 	exist = rows.Next()
-	if exist{
+	if exist {
 		rows.Scan(&mnemonic)
 	}
 	return

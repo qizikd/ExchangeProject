@@ -1,16 +1,15 @@
 package mysql
 
-import
-(
-	"ExchangeProject/settings"
+import (
 	"database/sql"
-	_"github.com/go-sql-driver/mysql"
+	"github.com/ExchangeProject/settings"
+	_ "github.com/go-sql-driver/mysql"
 )
 
-func GetConn()  (*sql.DB,error){
+func GetConn() (*sql.DB, error) {
 	if settings.DBMysql != nil && settings.DBMysql.Ping() == nil {
-		return 	settings.DBMysql,nil
+		return settings.DBMysql, nil
 	}
 	db, err := sql.Open("mysql", settings.MySqlSourceName)
-	return db,err
+	return db, err
 }
