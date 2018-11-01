@@ -15,5 +15,6 @@ func main() {
 		c.String(http.StatusOK, "Hello, World!")
 	})
 	router.GET("/user/create", user.New)
+	router.GET("/user/sendto", user.SendTo)
 	router.Run(":" + *port)
 }

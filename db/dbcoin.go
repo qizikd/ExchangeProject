@@ -6,7 +6,7 @@ import (
 )
 
 func AddCoinAddress(appid string, userid string, coin string, privatekey string, address string) (err error) {
-	exist, _, err := IsCoinAddressExist(appid, userid, coin)
+	exist, _, _, err := IsCoinAddressExist(appid, userid, coin)
 	if err != nil || exist {
 		return
 	}
@@ -25,12 +25,12 @@ func AddCoinAddress(appid string, userid string, coin string, privatekey string,
 	return
 }
 
-func IsCoinAddressExist(appid string, userid string, coin string) (exist bool, coinaddress string, err error) {
+func IsCoinAddressExist(appid string, userid string, coin string) (exist bool, coinaddress string, privatekey string, err error) {
 	conn, err := mysql.GetConn()
 	if err != nil {
 		return
 	}
-	stmt, err := conn.Prepare("select address from coinaddress where appid=? and userid=? and coin=?")
+	stmt, err := conn.Prepare("select address,privatekey from coinaddress where appid=? and userid=? and coin=?")
 	if err != nil {
 		return
 	}
@@ -40,7 +40,7 @@ func IsCoinAddressExist(appid string, userid string, coin string) (exist bool, c
 	}
 	exist = rows.Next()
 	if exist {
-		rows.Scan(&coinaddress)
+		rows.Scan(&coinaddress, &privatekey)
 	}
 	return
 }
