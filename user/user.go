@@ -171,7 +171,13 @@ func SendTo(c *gin.Context) {
 		return
 	}
 	//判断代币地址和私匙是否存在
-	exist, fromAddress, privKey, err := db.IsCoinAddressExist(appid, userid, coin)
+	coinSymbol := coin
+	if coin == "ETH" || coin == "ERC-20" {
+		coinSymbol = "ETH"
+	} else {
+		coinSymbol = "BTC"
+	}
+	exist, fromAddress, privKey, err := db.IsCoinAddressExist(appid, userid, coinSymbol)
 	if err != nil || !exist {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
@@ -199,6 +205,49 @@ func SendTo(c *gin.Context) {
 			"code":  0,
 			"txHex": txHex,
 			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
+		})
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	case "ETH":
+		txHex, err := transfer.TransactionEth(toAddress, privKey, int64(amount))
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "交易失败",
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code":  0,
+			"txHex": txHex,
+			"txUrl": fmt.Sprintf("https://etherscan.io/tx/%s", txHex),
+		})
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	case "ERC-20":
+		tokenAddress := c.Query("tokenaddress")
+		txHex, err := transfer.TransactionToken(toAddress, tokenAddress, privKey, int64(amount))
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "交易失败",
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code":  0,
+			"txHex": txHex,
+			"txUrl": fmt.Sprintf("https://etherscan.io/tx/%s", txHex),
 		})
 		if err != nil {
 			fmt.Println(err)
