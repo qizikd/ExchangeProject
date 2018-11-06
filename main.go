@@ -16,5 +16,7 @@ func main() {
 	})
 	router.GET("/user/create", user.New)
 	router.GET("/user/sendto", user.SendTo)
+	router.GET("/user/balance", user.Balance)
+	router.GET("/user/balanceEthToken", user.BalanceToken)
 	router.Run(":" + *port)
 }

@@ -112,7 +112,7 @@ func New(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
-			"msg":  "私匙生成失败",
+			"msg":  "地址生成失败",
 		})
 		fmt.Println("InsertUserErr: ", err)
 		return
@@ -254,4 +254,88 @@ func SendTo(c *gin.Context) {
 		}
 		return
 	}
+}
+
+func Balance(c *gin.Context) {
+	appid := c.Query("appid")
+	appsecret := c.Query("appsecret")
+	coin := c.Query("coin")
+	address := c.Query("address")
+	//判断appid和appsecret是否合法
+	if !VerifyAppId(appid, appsecret) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -333,
+			"msg":  "appip或appsecret非法",
+		})
+		return
+	}
+	switch coin {
+	case "BTC":
+		balance, err := transfer.GetBalanceBtc(address)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "获取余额失败",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": gin.H{
+				"coin":    coin,
+				"address": address,
+				"balance": balance,
+			},
+		})
+	case "ETH":
+		balance, err := transfer.GetEthBalance(address)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "获取余额失败",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": gin.H{
+				"coin":    coin,
+				"address": address,
+				"balance": balance.String(),
+			},
+		})
+		return
+	default:
+		return
+	}
+}
+
+func BalanceToken(c *gin.Context) {
+	appid := c.Query("appid")
+	appsecret := c.Query("appsecret")
+	tokenAddress := c.Query("tokenaddress")
+	address := c.Query("address")
+	//判断appid和appsecret是否合法
+	if !VerifyAppId(appid, appsecret) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -333,
+			"msg":  "appip或appsecret非法",
+		})
+		return
+	}
+	balance, err := transfer.GetTokenBalance(tokenAddress, address)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "获取余额失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": gin.H{
+			"address": address,
+			"balance": balance.String(),
+		},
+	})
 }

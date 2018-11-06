@@ -30,3 +30,12 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	}
 	return skel.Trans.Hash, nil
 }
+
+func GetBalanceBtc(address string) (balance int, err error) {
+	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+	addr, err := bcy.GetAddrBal(address, nil)
+	if err != nil {
+		return
+	}
+	return addr.Balance, nil
+}
