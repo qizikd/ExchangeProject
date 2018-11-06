@@ -3,6 +3,8 @@ package transfer
 import (
 	"context"
 	"crypto/ecdsa"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/ExchangeProject/token"
 	"github.com/ethereum/go-ethereum"
@@ -15,8 +17,28 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
+	"io/ioutil"
 	"math/big"
+	"net/http"
+	"strconv"
 )
+
+//"timestamp":1541128059,"from":"0xc50e30a781355821d4a45180bc2e68d619da0e3d","to":"0x16dc60b242e301c40541fe89ca4065471de12ba3",
+// "hash":"0x66d3419c02348381b2312b315021e3bab0a8931a5ea9356d509186e99da88037","value":2.0e-5,"input":"0x","success":true
+
+type TXEthplorer struct {
+	Timestamp int     `json:"timestamp"`
+	From      string  `json:"from"`
+	To        string  `json:"to"`
+	TxHash    string  `json:"hash"`
+	Value     float32 `json:"value"`
+	Success   bool    `json:"success"`
+}
+
+type TXEthplorerErr struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
 
 func TransactionEth(toAddress string, privateKey string, amount int64) (tx string, err error) {
 	tx, err = sendRawTransaction(privateKey, toAddress, nil, amount)
@@ -73,6 +95,37 @@ func GetTokenBalance(tokenAddress string, address string) (amount big.Int, err e
 	}
 	fmt.Println("balance: ", balance)
 	return *balance, nil
+}
+
+func GetTokenTransactions(tokenaddress string, address string) (txs []TXEthplorer, err error) {
+	url := fmt.Sprintf("http://api.ethplorer.io/getAddressTransactions/%s?apiKey=%s&token=%s&type=transfer", address, "freekey", tokenaddress)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取交易失败")
+		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
+		if resp.StatusCode == http.StatusForbidden {
+			body, _ := ioutil.ReadAll(resp.Body)
+			fmt.Println(string(body))
+		}
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	err = json.Unmarshal(body, &txs)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return
 }
 
 func buildTransfer(toAddressHex string, tokenAmount int64) (data []byte) {
