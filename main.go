@@ -20,5 +20,6 @@ func main() {
 	router.GET("/user/balanceEthToken", user.BalanceToken)
 	router.GET("/user/tokenTxs", user.TokenTransactions)
 	router.GET("/user/ethTxs", user.EthTransactions)
+	router.GET("/user/btcTxs", user.BtcTransactions)
 	router.Run(":" + *port)
 }

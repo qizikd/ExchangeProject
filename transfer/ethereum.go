@@ -23,9 +23,6 @@ import (
 	"strconv"
 )
 
-//"timestamp":1541128059,"from":"0xc50e30a781355821d4a45180bc2e68d619da0e3d","to":"0x16dc60b242e301c40541fe89ca4065471de12ba3",
-// "hash":"0x66d3419c02348381b2312b315021e3bab0a8931a5ea9356d509186e99da88037","value":2.0e-5,"input":"0x","success":true
-
 type EthplorerAddTxs struct {
 	Timestamp int     `json:"timestamp"`
 	From      string  `json:"from"`
@@ -44,16 +41,16 @@ type EthplorerHistoryTx struct {
 	Type      string `json:"type"`
 }
 
+type EthplorerHistoryTxs struct {
+	Operations []EthplorerHistoryTx `json:"operations"`
+}
+
 type EthplorerToken struct {
 	Address     string `json:"address"`
 	Name        string `json:"name"`
 	Decimals    string `json:"decimals"`
 	Symbol      string `json:"symbol"`
 	TotalSupply string `json:"totalsupply"`
-}
-
-type EthplorerHistoryTxs struct {
-	Operations []EthplorerHistoryTx `json:"operations"`
 }
 
 type EthplorerErr struct {
