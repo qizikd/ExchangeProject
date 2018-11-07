@@ -371,3 +371,33 @@ func TokenTransactions(c *gin.Context) {
 		},
 	})
 }
+
+func EthTransactions(c *gin.Context) {
+	appid := c.Query("appid")
+	appsecret := c.Query("appsecret")
+	address := c.Query("address")
+	//判断appid和appsecret是否合法
+	if !VerifyAppId(appid, appsecret) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -333,
+			"msg":  "appip或appsecret非法",
+		})
+		return
+	}
+
+	txs, err := transfer.GetEthTransactions(address)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "获取交易历史失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": gin.H{
+			"address": address,
+			"txs":     txs,
+		},
+	})
+}

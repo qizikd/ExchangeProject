@@ -26,7 +26,7 @@ import (
 //"timestamp":1541128059,"from":"0xc50e30a781355821d4a45180bc2e68d619da0e3d","to":"0x16dc60b242e301c40541fe89ca4065471de12ba3",
 // "hash":"0x66d3419c02348381b2312b315021e3bab0a8931a5ea9356d509186e99da88037","value":2.0e-5,"input":"0x","success":true
 
-type TXEthplorer struct {
+type EthplorerAddTxs struct {
 	Timestamp int     `json:"timestamp"`
 	From      string  `json:"from"`
 	To        string  `json:"to"`
@@ -35,7 +35,28 @@ type TXEthplorer struct {
 	Success   bool    `json:"success"`
 }
 
-type TXEthplorerErr struct {
+type EthplorerHistoryTx struct {
+	Timestamp int    `json:"timestamp"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	TxHash    string `json:"transactionHash"`
+	Value     string `json:"value"`
+	Type      string `json:"type"`
+}
+
+type EthplorerToken struct {
+	Address     string `json:"address"`
+	Name        string `json:"name"`
+	Decimals    string `json:"decimals"`
+	Symbol      string `json:"symbol"`
+	TotalSupply string `json:"totalsupply"`
+}
+
+type EthplorerHistoryTxs struct {
+	Operations []EthplorerHistoryTx `json:"operations"`
+}
+
+type EthplorerErr struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
@@ -97,8 +118,8 @@ func GetTokenBalance(tokenAddress string, address string) (amount big.Int, err e
 	return *balance, nil
 }
 
-func GetTokenTransactions(tokenaddress string, address string) (txs []TXEthplorer, err error) {
-	url := fmt.Sprintf("http://api.ethplorer.io/getAddressTransactions/%s?apiKey=%s&token=%s&type=transfer", address, "freekey", tokenaddress)
+func GetEthTransactions(address string) (txs []EthplorerAddTxs, err error) {
+	url := fmt.Sprintf("http://api.ethplorer.io/getAddressTransactions/%s?apiKey=%s", address, "freekey")
 	fmt.Println(url)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -126,6 +147,38 @@ func GetTokenTransactions(tokenaddress string, address string) (txs []TXEthplore
 		return
 	}
 	return
+}
+
+func GetTokenTransactions(tokenaddress string, address string) (txs []EthplorerHistoryTx, err error) {
+	url := fmt.Sprintf("http://api.ethplorer.io/getAddressHistory/%s?apiKey=%s&token=%s&type=transfer", address, "freekey", tokenaddress)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取交易失败")
+		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
+		if resp.StatusCode == http.StatusForbidden {
+			body, _ := ioutil.ReadAll(resp.Body)
+			fmt.Println(string(body))
+		}
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var ops EthplorerHistoryTxs
+	err = json.Unmarshal(body, &ops)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return ops.Operations, nil
 }
 
 func buildTransfer(toAddressHex string, tokenAmount int64) (data []byte) {
