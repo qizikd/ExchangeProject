@@ -353,8 +353,17 @@ func TokenTransactions(c *gin.Context) {
 		})
 		return
 	}
-
-	txs, err := transfer.GetTokenTransactions(tokenAddress, address)
+	p := c.Query("page")
+	page, err := strconv.Atoi(p)
+	if err != nil {
+		page = 1
+	}
+	s := c.Query("pagesize")
+	offset, err := strconv.Atoi(s)
+	if err != nil {
+		offset = 10
+	}
+	txs, err := transfer.GetTokenTransactions(tokenAddress, address, page, offset)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
@@ -384,8 +393,17 @@ func EthTransactions(c *gin.Context) {
 		})
 		return
 	}
-
-	txs, err := transfer.GetEthTransactions(address)
+	p := c.Query("page")
+	page, err := strconv.Atoi(p)
+	if err != nil {
+		page = 1
+	}
+	s := c.Query("pagesize")
+	offset, err := strconv.Atoi(s)
+	if err != nil {
+		offset = 10
+	}
+	txs, err := transfer.GetEthTransactions(address, page, offset)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,

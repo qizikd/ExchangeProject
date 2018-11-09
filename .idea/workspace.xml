@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7d718b04-55d0-41e6-a4d7-b60b0ba01388" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transfer/ethereum.go" beforeDir="false" afterPath="$PROJECT_DIR$/transfer/ethereum.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/user/user.go" afterDir="false" />
     </list>
@@ -51,32 +50,34 @@
     <session id="1242330556">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
           <entry key="project.open.time.1" value="1" />
           <entry key="project.open.time.28" value="1" />
           <entry key="project.open.time.32" value="2" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.open.time.37" value="1" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="47" />
+          <entry key="go" value="54" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="47" />
+          <entry key="Go" value="54" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="3556" />
-          <entry key="txt" value="38" />
+          <entry key="go" value="4746" />
+          <entry key="txt" value="44" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="3556" />
-          <entry key="PLAIN_TEXT" value="38" />
+          <entry key="Go" value="4746" />
+          <entry key="PLAIN_TEXT" value="44" />
         </counts>
       </usages-collector>
     </session>
@@ -102,8 +103,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="21" column="52" selection-start-line="21" selection-start-column="52" selection-end-line="21" selection-end-column="52" />
+            <state relative-caret-position="425">
+              <caret line="22" column="28" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -111,8 +112,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/user/user.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="370">
-              <caret line="398" column="36" selection-start-line="398" selection-start-column="36" selection-end-line="398" selection-end-column="36" />
+            <state relative-caret-position="600">
+              <caret line="409" column="29" selection-start-line="409" selection-start-column="21" selection-end-line="409" selection-end-column="29" />
               <folding>
                 <element signature="n#!!block;n#VerifyAppId#0" />
                 <element signature="n#!!block;n#New#0" />
@@ -128,8 +129,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transfer/btc.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+            <state relative-caret-position="1675">
+              <caret line="72" column="28" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -137,19 +138,35 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/transfer/ethereum.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="466">
-              <caret line="43" column="34" lean-forward="true" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+            <state relative-caret-position="749">
+              <caret line="231" column="5" selection-start-line="231" selection-start-column="5" selection-end-line="231" selection-end-column="5" />
               <folding>
-                <element signature="e#18#548#0" expanded="true" />
-                <element signature="e#1905#1924#0" />
+                <element signature="e#612#1498#0" />
                 <element signature="n#!!block;n#TransactionEth#0" />
                 <element signature="n#!!block;n#TransactionToken#0" />
                 <element signature="n#!!block;n#GetEthBalance#0" />
                 <element signature="n#!!block;n#GetTokenBalance#0" />
-                <element signature="n#!!block;n#GetTokenTransactions#0" />
                 <element signature="n#!!block;n#buildTransfer#0" />
                 <element signature="n#!!block;n#sendRawTransaction#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/core/types/transaction_signing.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="390">
+              <caret line="59" column="23" lean-forward="true" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/ethclient/ethclient.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8800">
+              <caret line="365" column="18" selection-start-line="365" selection-start-column="18" selection-end-line="365" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -194,8 +211,8 @@
         <option value="$PROJECT_DIR$/transaction/btc.go" />
         <option value="$PROJECT_DIR$/db/dbcoin.go" />
         <option value="$PROJECT_DIR$/token/btc.go" />
-        <option value="$PROJECT_DIR$/transfer/btc.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/transfer/btc.go" />
         <option value="$PROJECT_DIR$/user/user.go" />
         <option value="$PROJECT_DIR$/transfer/ethereum.go" />
       </list>
@@ -208,10 +225,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="116" />
-    <option name="y" value="99" />
-    <option name="width" value="1865" />
-    <option name="height" value="909" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -239,6 +256,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -350,7 +368,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -394,7 +411,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14658849" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.10607676" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -406,7 +423,7 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32900432" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49946696" visible="true" weight="0.30227518" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49946696" weight="0.30227518" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50053304" side_tool="true" weight="0.32900432" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -428,7 +445,9 @@
     <MESSAGE value="增加比特币转账功能" />
     <MESSAGE value="增加余额查询功能" />
     <MESSAGE value="增加代币历史交易查询" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加代币历史交易查询" />
+    <MESSAGE value="增加以太坊历史交易查询" />
+    <MESSAGE value="增加比特币历史交易查询" />
+    <option name="LAST_COMMIT_MESSAGE" value="增加比特币历史交易查询" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/db/mysql.go" />
@@ -525,13 +544,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/ethclient/ethclient.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="398">
-          <caret line="416" column="66" selection-start-line="416" selection-start-column="43" selection-end-line="416" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/log/logger.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1350" />
@@ -554,20 +566,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mnemonic/mnemonic.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="16" selection-start-column="8" selection-end-column="16" />
-          <folding>
-            <element signature="e#18#361#0" expanded="true" />
-            <element signature="n#!!block;n#NewMnemonic#0" />
-            <element signature="n#!!block;n#NewAccounts#0" />
-            <element signature="n#!!block;n#MoreAccounts#0" />
-            <element signature="n#!!block;n#generateAccounts#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/db/dbcoin.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
@@ -575,24 +573,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/address.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="10" column="16" selection-start-line="10" selection-start-column="16" selection-end-line="10" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://D:/Go/src/encoding/json/stream.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="13" column="5" selection-start-line="13" selection-start-column="5" selection-end-line="13" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/types.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="448">
-          <caret line="158" selection-start-line="158" selection-end-line="167" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -617,13 +601,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/transfer/btc.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/gobcy.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -638,10 +615,80 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/address.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="50" column="76" selection-start-line="50" selection-start-column="76" selection-end-line="50" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/types.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="223" column="54" lean-forward="true" selection-start-line="223" selection-start-column="54" selection-end-line="223" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mnemonic/mnemonic.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="16" selection-start-column="8" selection-end-column="16" />
+          <folding>
+            <element signature="e#18#361#0" expanded="true" />
+            <element signature="n#!!block;n#NewMnemonic#0" />
+            <element signature="n#!!block;n#NewAccounts#0" />
+            <element signature="n#!!block;n#MoreAccounts#0" />
+            <element signature="n#!!block;n#generateAccounts#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="22" column="28" selection-start-line="22" selection-start-column="22" selection-end-line="22" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transfer/btc.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1675">
+          <caret line="72" column="28" selection-start-line="72" selection-start-column="28" selection-end-line="72" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/ethclient/ethclient.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8800">
+          <caret line="365" column="18" selection-start-line="365" selection-start-column="18" selection-end-line="365" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/crypto/secp256k1/secp256.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="57" column="5" selection-start-line="57" selection-start-column="5" selection-end-line="57" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/crypto/signature_cgo.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="59" column="24" selection-start-line="59" selection-start-column="24" selection-end-line="59" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/core/types/transaction_signing.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="59" column="23" lean-forward="true" selection-start-line="59" selection-start-column="23" selection-end-line="59" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/user/user.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="370">
-          <caret line="398" column="36" selection-start-line="398" selection-start-column="36" selection-end-line="398" selection-end-column="36" />
+        <state relative-caret-position="600">
+          <caret line="409" column="29" selection-start-line="409" selection-start-column="21" selection-end-line="409" selection-end-column="29" />
           <folding>
             <element signature="n#!!block;n#VerifyAppId#0" />
             <element signature="n#!!block;n#New#0" />
@@ -653,25 +700,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="21" column="52" selection-start-line="21" selection-start-column="52" selection-end-line="21" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/transfer/ethereum.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="43" column="34" lean-forward="true" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+        <state relative-caret-position="749">
+          <caret line="231" column="5" selection-start-line="231" selection-start-column="5" selection-end-line="231" selection-end-column="5" />
           <folding>
-            <element signature="e#18#548#0" expanded="true" />
-            <element signature="e#1905#1924#0" />
+            <element signature="e#612#1498#0" />
             <element signature="n#!!block;n#TransactionEth#0" />
             <element signature="n#!!block;n#TransactionToken#0" />
             <element signature="n#!!block;n#GetEthBalance#0" />
             <element signature="n#!!block;n#GetTokenBalance#0" />
-            <element signature="n#!!block;n#GetTokenTransactions#0" />
             <element signature="n#!!block;n#buildTransfer#0" />
             <element signature="n#!!block;n#sendRawTransaction#0" />
           </folding>

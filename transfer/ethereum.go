@@ -23,6 +23,7 @@ import (
 	"strconv"
 )
 
+/*
 type EthplorerAddTxs struct {
 	Timestamp int     `json:"timestamp"`
 	From      string  `json:"from"`
@@ -57,6 +58,45 @@ type EthplorerErr struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
+*/
+
+type EtherscanEthTx struct {
+	Hash      string `json:"hash"`
+	TimeStamp string `json:"timeStamp"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Value     string `json:"value"`
+	Gas       string `json:"gas"`
+	GasPrice  string `json:"gasPrice"`
+	GasUsed   string `json:"gasUsed"`
+	IsError   string `json:"isError"`
+}
+
+type EtherscanEthResult struct {
+	Status  string           `json:"status"`
+	Message string           `json:"message"`
+	Result  []EtherscanEthTx `json:"result"`
+}
+
+type EtherscanTokenTx struct {
+	Hash      string `json:"hash"`
+	TimeStamp string `json:"timeStamp"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Value     string `json:"value"`
+	Gas       string `json:"gas"`
+	GasPrice  string `json:"gasPrice"`
+	GasUsed   string `json:"gasUsed"`
+}
+
+type EtherscanTokenResult struct {
+	Status  string             `json:"status"`
+	Message string             `json:"message"`
+	Result  []EtherscanTokenTx `json:"result"`
+}
+
+var ethplorerApiKey = "uvbw1547DAjgI32" //freekey
+var etherscanApiKey = "Y4E31DPUZHG7XQDVQU31233GHMB98YBTIW"
 
 func TransactionEth(toAddress string, privateKey string, amount int64) (tx string, err error) {
 	tx, err = sendRawTransaction(privateKey, toAddress, nil, amount)
@@ -115,9 +155,11 @@ func GetTokenBalance(tokenAddress string, address string) (amount big.Int, err e
 	return *balance, nil
 }
 
-func GetEthTransactions(address string) (txs []EthplorerAddTxs, err error) {
-	url := fmt.Sprintf("http://api.ethplorer.io/getAddressTransactions/%s?apiKey=%s", address, "freekey")
-	fmt.Println(url)
+func GetEthTransactions(address string, page int, offset int) (txs []EtherscanEthTx, err error) {
+	//https://api.etherscan.io/api?module=account&action=txlist&address=0x16dC60B242E301c40541Fe89CA4065471dE12ba3&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=YourApiKeyToken
+	//url := fmt.Sprintf("http://api.ethplorer.io/getAddressTransactions/%s?apiKey=%s", address, ethplorerApiKey)
+	url := fmt.Sprintf("https://api.etherscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&address=%s&apikey=%s&page=%d&offset=%d&sort=desc",
+		address, etherscanApiKey, page, offset)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
@@ -138,44 +180,58 @@ func GetEthTransactions(address string) (txs []EthplorerAddTxs, err error) {
 		fmt.Println(err)
 		return
 	}
-	err = json.Unmarshal(body, &txs)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	return
-}
-
-func GetTokenTransactions(tokenaddress string, address string) (txs []EthplorerHistoryTx, err error) {
-	url := fmt.Sprintf("http://api.ethplorer.io/getAddressHistory/%s?apiKey=%s&token=%s&type=transfer", address, "freekey", tokenaddress)
-	fmt.Println(url)
-	resp, err := http.Get(url)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		err = errors.New("获取交易失败")
-		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
-		if resp.StatusCode == http.StatusForbidden {
-			body, _ := ioutil.ReadAll(resp.Body)
-			fmt.Println(string(body))
-		}
-		return
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	var ops EthplorerHistoryTxs
+	var ops EtherscanEthResult
 	err = json.Unmarshal(body, &ops)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	return ops.Operations, nil
+	if ops.Status == "0" {
+		fmt.Println(ops.Message)
+		err = errors.New(ops.Message)
+		return
+	}
+	return ops.Result, nil
+}
+
+func GetTokenTransactions(tokenaddress string, address string, page int, offset int) (txs []EtherscanTokenTx, err error) {
+	//https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=0x0f466615b79f8b8973734b4941ac26c8e995ee7c&address=0x16dC60B242E301c40541Fe89CA4065471dE12ba3&page=1&offset=10&sort=desc&apikey=YourApiKeyToken
+	url := fmt.Sprintf("https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=%s&address=%s&apikey=%s&page=%d&offset=%d&sort=desc",
+		tokenaddress, address, etherscanApiKey, page, offset)
+	//url := fmt.Sprintf("http://api.ethplorer.io/getAddressHistory/%s?apiKey=%s&token=%s&type=transfer", address, ethplorerApiKey, tokenaddress)
+	fmt.Println(url)
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取交易失败")
+		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
+		if resp.StatusCode == http.StatusForbidden {
+			body, _ := ioutil.ReadAll(resp.Body)
+			fmt.Println(string(body))
+		}
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var ops EtherscanTokenResult
+	err = json.Unmarshal(body, &ops)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if ops.Status == "0" {
+		fmt.Println(ops.Message)
+		err = errors.New(ops.Message)
+		return
+	}
+	return ops.Result, nil
 }
 
 func buildTransfer(toAddressHex string, tokenAmount int64) (data []byte) {
