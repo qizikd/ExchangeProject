@@ -4,7 +4,11 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/blockcypher/gobcy"
+	"github.com/btcsuite/btcd/rpcclient"
+	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/base58"
+	"github.com/ethereum/go-ethereum/log"
+	"strconv"
 )
 
 type GobcyAddInfo struct {
@@ -42,7 +46,8 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	privstr := hex.EncodeToString(privb)
 	privstr = privstr[0 : len(privstr)-2]
 	//Post New TXSkeleton
-	skel, err := bcy.NewTX(gobcy.TempNewTX(fromAddress, toAddress, amount), false)
+	trans := gobcy.TempNewTX(fromAddress, toAddress, amount)
+	skel, err := bcy.NewTX(trans, false)
 	//Sign it locally
 	err = skel.Sign([]string{privstr})
 	if err != nil {
@@ -58,6 +63,27 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	return skel.Trans.Hash, nil
 }
 
+func TransactionUsdt(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
+	client, err := rpcclient.New(&rpcclient.ConnConfig{
+		HTTPPostMode: true,
+		DisableTLS:   true,
+		//rpc.blockchain.info
+		Host: "39.104.156.29:18332",
+		User: "omnicorerpc",
+		Pass: "abcd1234",
+	}, nil)
+	if err != nil {
+		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		return
+	}
+	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64))
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	return
+}
+
 func GetBalanceBtc(address string) (balance int, err error) {
 	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
 	addr, err := bcy.GetAddrBal(address, nil)
@@ -68,6 +94,27 @@ func GetBalanceBtc(address string) (balance int, err error) {
 	return addr.Balance, nil
 }
 
+func GetBalanceUSDT(address string) (balance int, err error) {
+	client, err := rpcclient.New(&rpcclient.ConnConfig{
+		HTTPPostMode: true,
+		DisableTLS:   true,
+		//rpc.blockchain.info
+		Host: "39.104.156.29:18332",
+		User: "omnicorerpc",
+		Pass: "abcd1234",
+	}, nil)
+	if err != nil {
+		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		return
+	}
+	balance, err = client.GetOmniBalance(address)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return
+}
+
 func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
 	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
 	addr, err = bcy.GetAddrFull(address, nil)
@@ -76,4 +123,26 @@ func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
 		return
 	}
 	return
+}
+
+func GetUsdtTransactions(address string, count int, skip int) (result []rpcclient.Omni_ListtransactionResult, err error) {
+	client, err := rpcclient.New(&rpcclient.ConnConfig{
+		HTTPPostMode: true,
+		DisableTLS:   true,
+		//rpc.blockchain.info
+		Host: "39.104.156.29:18332",
+		User: "omnicorerpc",
+		Pass: "abcd1234",
+	}, nil)
+	if err != nil {
+		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		return
+	}
+	result, err = client.Omni_Listtransactions(address, count, skip)
+	if err != nil {
+		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		fmt.Println(err)
+		return
+	}
+	return result, err
 }

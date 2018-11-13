@@ -107,6 +107,8 @@ func New(c *gin.Context) {
 	if coin == "ETH" {
 		info, err = mnemonic.GenerateAccount(_mnemonic, path)
 	} else if coin == "BTC" {
+		//TODO 临时生成btc-test3地址
+		path = "m/44'/1'/1'/0/0"
 		info, err = mnemonic.GenerateBtcAccount(_mnemonic, path)
 	}
 	if err != nil {
@@ -191,6 +193,27 @@ func SendTo(c *gin.Context) {
 	switch coin {
 	case "BTC":
 		txHex, err := transfer.TransactionBtc(fromAddress, toAddress, privKey, amount)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "交易失败",
+			})
+			if err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code":  0,
+			"txHex": txHex,
+			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
+		})
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	case "USDT":
+		txHex, err := transfer.TransactionUsdt(fromAddress, toAddress, privKey, amount)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": -1,
@@ -302,6 +325,24 @@ func Balance(c *gin.Context) {
 				"coin":    coin,
 				"address": address,
 				"balance": balance.String(),
+			},
+		})
+		return
+	case "USDT":
+		balance, err := transfer.GetBalanceUSDT(address)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"msg":  "获取余额失败",
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": gin.H{
+				"coin":    coin,
+				"address": address,
+				"balance": strconv.Itoa(balance),
 			},
 		})
 		return
@@ -446,6 +487,47 @@ func BtcTransactions(c *gin.Context) {
 		"data": gin.H{
 			"address": address,
 			"txs":     txs.TXs,
+		},
+	})
+}
+
+func UsdtTransactions(c *gin.Context) {
+	appid := c.Query("appid")
+	appsecret := c.Query("appsecret")
+	address := c.Query("address")
+	//判断appid和appsecret是否合法
+	if !VerifyAppId(appid, appsecret) {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -333,
+			"msg":  "appip或appsecret非法",
+		})
+		return
+	}
+	p := c.Query("page")
+	page, err := strconv.Atoi(p)
+	if err != nil || page == 0 {
+		page = 1
+	}
+	page = page - 1
+	//omnicore page是从0开始
+	s := c.Query("pagesize")
+	pagesize, err := strconv.Atoi(s)
+	if err != nil {
+		pagesize = 10
+	}
+	txs, err := transfer.GetUsdtTransactions(address, pagesize, page*pagesize)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"msg":  "获取交易历史失败",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": gin.H{
+			"address": address,
+			"txs":     txs,
 		},
 	})
 }
