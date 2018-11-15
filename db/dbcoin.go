@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 	"github.com/ExchangeProject/core/mysql"
 )
 
@@ -64,5 +65,36 @@ func GetCoinIndex(coin string) (coinindex int, err error) {
 	} else {
 		err = errors.New("当前数字货币不支持")
 	}
+	return
+}
+
+func GetNoImportUserBtcPrivkey() (users map[string]string, err error) {
+	conn, err := mysql.GetConn()
+	if err != nil {
+		return
+	}
+	stmt, err := conn.Prepare("select userid,privatekey from coinaddress where coin='BTC' and import=0")
+	if err != nil {
+		return
+	}
+	rows, err := stmt.Query()
+	if err != nil {
+		return
+	}
+	var userid, privkey string
+	users = make(map[string]string)
+	for rows.Next() {
+		rows.Scan(&userid, &privkey)
+		users[userid] = privkey
+	}
+	return
+}
+
+func UpdateImported(userid string) (err error) {
+	conn, err := mysql.GetConn()
+	if err != nil {
+		return
+	}
+	_, err = conn.Exec(fmt.Sprintf("update coinaddress set import = 1 where coin='BTC' and userid='%s'", userid))
 	return
 }

@@ -10,7 +10,6 @@ import (
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/sha3"
@@ -101,7 +100,7 @@ var etherscanApiKey = "Y4E31DPUZHG7XQDVQU31233GHMB98YBTIW"
 func TransactionEth(toAddress string, privateKey string, amount int64) (tx string, err error) {
 	tx, err = sendRawTransaction(privateKey, toAddress, nil, amount)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("sendRawTransaction", err)
 		return
 	}
 	return
@@ -111,7 +110,7 @@ func TransactionToken(toAddress string, tokenAddress string, privateKey string, 
 	data := buildTransfer(toAddress, tokenAmount)
 	tx, err = sendRawTransaction(privateKey, tokenAddress, data, 0)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("sendRawTransaction", err)
 		return
 	}
 	return
@@ -121,14 +120,12 @@ func GetEthBalance(address string) (amount big.Int, err error) {
 	client, err := ethclient.Dial("https://mainnet.infura.io")
 	if err != nil {
 		log.Error("连接infura节点失败", err)
-		fmt.Println(err)
 		return
 	}
 	defer client.Close()
 	balance, err := client.BalanceAt(context.Background(), common.HexToAddress(address), nil)
 	if err != nil {
 		log.Error("获取余额失败", err)
-		fmt.Println(err)
 		return
 	}
 	return *balance, nil
@@ -151,7 +148,6 @@ func GetTokenBalance(tokenAddress string, address string) (amount big.Int, err e
 		log.Error("获取token balance失败", err)
 		return
 	}
-	fmt.Println("balance: ", balance)
 	return *balance, nil
 }
 
@@ -162,32 +158,33 @@ func GetEthTransactions(address string, page int, offset int) (txs []EtherscanEt
 		address, etherscanApiKey, page, offset)
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("http请求失败", url, err)
 		return
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		err = errors.New("获取交易失败")
-		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
+		//fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
 		if resp.StatusCode == http.StatusForbidden {
 			body, _ := ioutil.ReadAll(resp.Body)
-			fmt.Println(string(body))
+			log.Error("httpRequst", url, string(body))
+			//fmt.Println(string(body))
 		}
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("读取request body失败", err)
 		return
 	}
 	var ops EtherscanEthResult
 	err = json.Unmarshal(body, &ops)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("解析json字符串失败", err)
 		return
 	}
 	if ops.Status == "0" {
-		fmt.Println(ops.Message)
+		log.Error("返回错误", url, ops.Message)
 		err = errors.New(ops.Message)
 		return
 	}
@@ -199,10 +196,9 @@ func GetTokenTransactions(tokenaddress string, address string, page int, offset 
 	url := fmt.Sprintf("https://api.etherscan.io/api?module=account&action=tokentx&contractaddress=%s&address=%s&apikey=%s&page=%d&offset=%d&sort=desc",
 		tokenaddress, address, etherscanApiKey, page, offset)
 	//url := fmt.Sprintf("http://api.ethplorer.io/getAddressHistory/%s?apiKey=%s&token=%s&type=transfer", address, ethplorerApiKey, tokenaddress)
-	fmt.Println(url)
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("http请求失败", url, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -211,23 +207,23 @@ func GetTokenTransactions(tokenaddress string, address string, page int, offset 
 		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
 		if resp.StatusCode == http.StatusForbidden {
 			body, _ := ioutil.ReadAll(resp.Body)
-			fmt.Println(string(body))
+			log.Error("httpRequst", url, string(body))
 		}
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("读取request body失败", err)
 		return
 	}
 	var ops EtherscanTokenResult
 	err = json.Unmarshal(body, &ops)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("解析json字符串失败", err)
 		return
 	}
 	if ops.Status == "0" {
-		fmt.Println(ops.Message)
+		log.Error("返回错误", url, ops.Message)
 		err = errors.New(ops.Message)
 		return
 	}
@@ -240,13 +236,10 @@ func buildTransfer(toAddressHex string, tokenAmount int64) (data []byte) {
 	hash := sha3.NewKeccak256()
 	hash.Write(transferFnSignature)
 	methodID := hash.Sum(nil)[:4]
-	fmt.Println("methodID:", hexutil.Encode(methodID)) // 0xa9059cbb
 	//生成data methodABI+参数
 	paddedAddress := common.LeftPadBytes(toAddress.Bytes(), 32)
-	fmt.Println("toAddress:", hexutil.Encode(paddedAddress)) // 0x0000000000000000000000004592d8f8d7b001e72cb26a73e4fa1806a51ac79d
 	amount := big.NewInt(tokenAmount)
 	paddedAmount := common.LeftPadBytes(amount.Bytes(), 32)
-	fmt.Println("Amount", hexutil.Encode(paddedAmount)) // 0x00000000000000000000000000000000000000000000003635c9adc5dea00000
 	data = append(data, methodID...)
 	data = append(data, paddedAddress...)
 	data = append(data, paddedAmount...)

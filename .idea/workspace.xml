@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7d718b04-55d0-41e6-a4d7-b60b0ba01388" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/transfer/omnicore.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/mysql/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/core/mysql/mysql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/dbcoin.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/dbcoin.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mnemonic/mnemonic.go" beforeDir="false" afterPath="$PROJECT_DIR$/mnemonic/mnemonic.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/transfer/btc.go" beforeDir="false" afterPath="$PROJECT_DIR$/transfer/btc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/transfer/ethereum.go" beforeDir="false" afterPath="$PROJECT_DIR$/transfer/ethereum.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/user/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/user/user.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -63,24 +67,24 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="go" value="68" />
+          <entry key="go" value="96" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Go" value="68" />
+          <entry key="Go" value="96" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="go" value="5339" />
-          <entry key="txt" value="68" />
+          <entry key="go" value="6971" />
+          <entry key="txt" value="82" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Go" value="5339" />
-          <entry key="PLAIN_TEXT" value="68" />
+          <entry key="Go" value="6971" />
+          <entry key="PLAIN_TEXT" value="82" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.go.postfix.template.usages.trigger">
@@ -92,27 +96,40 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mnemonic/mnemonic.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="202" column="35" selection-start-line="202" selection-start-column="35" selection-end-line="202" selection-end-column="35" />
+            <state relative-caret-position="645">
+              <caret line="240" column="36" selection-start-line="240" selection-start-column="36" selection-end-line="240" selection-end-column="36" />
               <folding>
                 <element signature="e#18#361#0" expanded="true" />
                 <element signature="n#!!block;n#NewMnemonic#0" />
-                <element signature="n#!!block;n#NewAccounts#0" />
                 <element signature="n#!!block;n#MoreAccounts#0" />
                 <element signature="n#!!block;n#generateAccounts#0" />
+                <element signature="n#!!block;n#GenerateAccount#0" />
+                <element signature="n#!!block;n#GenerateBtcAccount#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="18" column="26" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
+            <state relative-caret-position="50">
+              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/transfer/omnicore.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+              <folding>
+                <element signature="e#18#68#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -120,9 +137,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/user/user.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="510" column="18" selection-start-line="510" selection-start-column="18" selection-end-line="510" selection-end-column="18" />
+            <state relative-caret-position="375">
+              <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
               <folding>
+                <element signature="e#14#193#0" expanded="true" />
                 <element signature="n#!!block;n#VerifyAppId#0" />
                 <element signature="n#!!block;n#New#0" />
                 <element signature="n#!!block;n#SendTo#0" />
@@ -131,6 +149,7 @@
                 <element signature="n#!!block;n#TokenTransactions#0" />
                 <element signature="n#!!block;n#EthTransactions#0" />
                 <element signature="n#!!block;n#BtcTransactions#0" />
+                <element signature="n#!!block;n#BtcTransactions#1" />
               </folding>
             </state>
           </provider>
@@ -139,11 +158,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transfer/btc.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="368">
-              <caret line="140" column="42" selection-start-line="140" selection-start-column="42" selection-end-line="140" selection-end-column="42" />
+            <state relative-caret-position="770">
+              <caret line="157" column="60" selection-start-line="157" selection-start-column="60" selection-end-line="157" selection-end-column="60" />
               <folding>
+                <element signature="n#!!block;n#TransactionBtc#0" />
+                <element signature="n#!!block;n#TransactionUsdt#0" />
                 <element signature="n#!!block;n#GetBalanceBtc#0" />
+                <element signature="n#!!block;n#GetBalanceUSDT#0" />
+                <element signature="n#!!block;n#GetBtcTransactions#0" />
+                <element signature="n#!!block;n#GetUsdtTransactions#0" />
+                <element signature="e#4225#4230#0" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/btcjson/walletsvrcmds.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-10005">
+              <caret line="273" column="24" selection-start-line="273" selection-start-column="5" selection-end-line="273" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -151,9 +185,14 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/transfer/ethereum.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="160" column="45" selection-start-line="160" selection-start-column="36" selection-end-line="160" selection-end-column="45" />
+            <state relative-caret-position="270">
+              <caret line="96" column="49" lean-forward="true" selection-start-line="96" selection-start-column="49" selection-end-line="96" selection-end-column="49" />
               <folding>
+                <element signature="n#!!block;n#TransactionEth#0" />
+                <element signature="n#!!block;n#TransactionToken#0" />
+                <element signature="n#!!block;n#GetEthBalance#0" />
+                <element signature="n#!!block;n#GetTokenBalance#0" />
+                <element signature="n#!!block;n#GetEthTransactions#0" />
                 <element signature="n#!!block;n#GetTokenTransactions#0" />
                 <element signature="n#!!block;n#buildTransfer#0" />
                 <element signature="n#!!block;n#sendRawTransaction#0" />
@@ -199,16 +238,17 @@
         <option value="$PROJECT_DIR$/btcwallet/wallet.go" />
         <option value="$PROJECT_DIR$/db/dbappstore.go" />
         <option value="$PROJECT_DIR$/db/dbuser.go" />
-        <option value="$PROJECT_DIR$/core/mysql/mysql.go" />
         <option value="$PROJECT_DIR$/transaction/btc.go" />
-        <option value="$PROJECT_DIR$/db/dbcoin.go" />
         <option value="$PROJECT_DIR$/token/btc.go" />
-        <option value="$PROJECT_DIR$/transfer/ethereum.go" />
-        <option value="$PROJECT_DIR$/mnemonic/mnemonic.go" />
-        <option value="$PROJECT_DIR$/main.go" />
-        <option value="$PROJECT_DIR$/transfer/btc.go" />
         <option value="$PROJECT_DIR$/../btcsuite/btcd/rpcclient/omniwallet.go" />
+        <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/db/dbcoin.go" />
+        <option value="$PROJECT_DIR$/transfer/omnicore.go" />
         <option value="$PROJECT_DIR$/user/user.go" />
+        <option value="$PROJECT_DIR$/transfer/btc.go" />
+        <option value="$PROJECT_DIR$/transfer/ethereum.go" />
+        <option value="$PROJECT_DIR$/core/mysql/mysql.go" />
+        <option value="$PROJECT_DIR$/mnemonic/mnemonic.go" />
       </list>
     </option>
   </component>
@@ -260,12 +300,7 @@
             <path>
               <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
               <item name="ExchangeProject" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ExchangeProject" type="462c0819:PsiDirectoryNode" />
-              <item name="db" type="462c0819:PsiDirectoryNode" />
+              <item name="mnemonic" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
@@ -285,32 +320,6 @@
             <path>
               <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-            <path>
-              <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-            </path>
-            <path>
-              <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="net" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-              <item name="Go SDK 1.10.3" type="20ee2d1f:SyntheticLibraryElementNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="net" type="462c0819:PsiDirectoryNode" />
-              <item name="http" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ExchangeProject" type="b2602c69:ProjectViewProjectNode" />
@@ -405,7 +414,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.077292114" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1641791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -417,8 +426,8 @@
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32900432" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49946696" weight="0.31310943" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50053304" side_tool="true" weight="0.32900432" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4989339" weight="0.2708559" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5010661" side_tool="true" weight="0.32827735" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -442,28 +451,10 @@
     <MESSAGE value="增加以太坊历史交易查询" />
     <MESSAGE value="增加比特币历史交易查询" />
     <MESSAGE value="查询以太坊交易记录改为从etherscan查询" />
-    <option name="LAST_COMMIT_MESSAGE" value="查询以太坊交易记录改为从etherscan查询" />
+    <MESSAGE value="查询泰达币的支持（自己搭建节点）" />
+    <option name="LAST_COMMIT_MESSAGE" value="查询泰达币的支持（自己搭建节点）" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/core/structs/user.go" />
-    <entry file="file://$PROJECT_DIR$/../github.com/ethereum/go-ethereum/common/types.go" />
-    <entry file="file://$PROJECT_DIR$/../github.com/ethereum/go-ethereum/accounts/accounts.go" />
-    <entry file="file://D:/Go/src/crypto/ecdsa/ecdsa.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="47" column="12" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://D:/Go/src/crypto/elliptic/elliptic.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="25" column="25" selection-start-line="25" selection-start-column="14" selection-end-line="25" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../github.com/ethereum/go-ethereum/accounts/hd.go" />
-    <entry file="file://$PROJECT_DIR$/../github.com/tyler-smith/go-bip32/bip32_test.go" />
     <entry file="file://$PROJECT_DIR$/../github.com/btcsuite/btcutil/hdkeychain/extendedkey.go" />
     <entry file="file://$PROJECT_DIR$/../github.com/btcsuite/btcutil/wif.go" />
     <entry file="file://$PROJECT_DIR$/../github.com/miguelmota/go-ethereum-hdwallet/hdwallet.go" />
@@ -473,13 +464,6 @@
     <entry file="file://$PROJECT_DIR$/../github.com/tyler-smith/go-bip32/bip32.go" />
     <entry file="file://$PROJECT_DIR$/../github.com/tyler-smith/go-bip32/vendor/github.com/FactomProject/basen/basen.go" />
     <entry file="file://$PROJECT_DIR$/../github.com/tyler-smith/go-bip32/utils.go" />
-    <entry file="file://$PROJECT_DIR$/db/dbappstore.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/settings/settings.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
@@ -487,22 +471,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core/mysql/mysql.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="4" column="16" selection-start-line="4" selection-start-column="16" selection-end-line="4" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/btcwallet/wallet.go" />
     <entry file="file://$PROJECT_DIR$/btcwallet/utils.go" />
-    <entry file="file://$PROJECT_DIR$/db/dbuser.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../gin-gonic/gin/context.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5075">
@@ -524,29 +494,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/log/logger.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1350" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/token/erc20.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5950">
           <caret line="238" column="1" lean-forward="true" selection-start-line="238" selection-start-column="1" selection-end-line="238" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/log/root.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="37" column="5" selection-start-line="37" selection-start-column="5" selection-end-line="37" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/db/dbcoin.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
         </state>
       </provider>
     </entry>
@@ -620,20 +571,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/btcjson/walletsvrcmds.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="348">
-          <caret line="144" column="21" lean-forward="true" selection-start-line="144" selection-start-column="21" selection-end-line="144" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/rpcclient/wallet.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="1124" column="36" lean-forward="true" selection-start-line="1124" selection-start-column="36" selection-end-line="1124" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../blockcypher/gobcy/tx.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2700">
@@ -659,46 +596,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mnemonic/mnemonic.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="202" column="35" selection-start-line="202" selection-start-column="35" selection-end-line="202" selection-end-column="35" />
-          <folding>
-            <element signature="e#18#361#0" expanded="true" />
-            <element signature="n#!!block;n#NewMnemonic#0" />
-            <element signature="n#!!block;n#NewAccounts#0" />
-            <element signature="n#!!block;n#MoreAccounts#0" />
-            <element signature="n#!!block;n#generateAccounts#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/core/types/transaction_signing.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="820">
           <caret line="93" column="42" selection-start-line="93" selection-start-column="42" selection-end-line="93" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transfer/ethereum.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="160" column="45" selection-start-line="160" selection-start-column="36" selection-end-line="160" selection-end-column="45" />
-          <folding>
-            <element signature="n#!!block;n#GetTokenTransactions#0" />
-            <element signature="n#!!block;n#buildTransfer#0" />
-            <element signature="n#!!block;n#sendRawTransaction#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/transfer/btc.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="140" column="42" selection-start-line="140" selection-start-column="42" selection-end-line="140" selection-end-column="42" />
-          <folding>
-            <element signature="n#!!block;n#GetBalanceBtc#0" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -709,11 +610,92 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://D:/Go/src/net/http/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-510">
+          <caret line="2753" column="10" lean-forward="true" selection-start-line="2753" selection-start-column="10" selection-end-line="2753" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../gin-gonic/gin/gin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="423">
+          <caret line="288" column="23" selection-start-line="288" selection-start-column="23" selection-end-line="288" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://D:/Go/src/crypto/ecdsa/ecdsa.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="52" column="5" selection-start-line="52" selection-start-column="5" selection-end-line="52" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/btcec/privkey.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="16" column="28" selection-start-line="16" selection-start-column="28" selection-end-line="16" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../btcsuite/btcutil/wif.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="473">
+          <caret line="51" column="8" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/rpcclient/infrastructure.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="489">
+          <caret line="893" column="1" lean-forward="true" selection-start-line="893" selection-start-column="1" selection-end-line="893" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/rpcclient/wallet.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="2170" column="5" lean-forward="true" selection-start-line="2170" selection-start-column="5" selection-end-line="2170" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/log/logger.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="137" column="21" selection-start-line="137" selection-start-column="21" selection-end-line="137" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../ethereum/go-ethereum/log/root.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="173">
+          <caret line="46" column="45" lean-forward="true" selection-start-line="46" selection-start-column="45" selection-end-line="46" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transfer/omnicore.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
+          <folding>
+            <element signature="e#18#68#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/user/user.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="510" column="18" selection-start-line="510" selection-start-column="18" selection-end-line="510" selection-end-column="18" />
+        <state relative-caret-position="375">
+          <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
           <folding>
+            <element signature="e#14#193#0" expanded="true" />
             <element signature="n#!!block;n#VerifyAppId#0" />
             <element signature="n#!!block;n#New#0" />
             <element signature="n#!!block;n#SendTo#0" />
@@ -722,14 +704,94 @@
             <element signature="n#!!block;n#TokenTransactions#0" />
             <element signature="n#!!block;n#EthTransactions#0" />
             <element signature="n#!!block;n#BtcTransactions#0" />
+            <element signature="n#!!block;n#BtcTransactions#1" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.go">
+    <entry file="file://$PROJECT_DIR$/transfer/btc.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="18" column="26" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
+        <state relative-caret-position="770">
+          <caret line="157" column="60" selection-start-line="157" selection-start-column="60" selection-end-line="157" selection-end-column="60" />
+          <folding>
+            <element signature="n#!!block;n#TransactionBtc#0" />
+            <element signature="n#!!block;n#TransactionUsdt#0" />
+            <element signature="n#!!block;n#GetBalanceBtc#0" />
+            <element signature="n#!!block;n#GetBalanceUSDT#0" />
+            <element signature="n#!!block;n#GetBtcTransactions#0" />
+            <element signature="n#!!block;n#GetUsdtTransactions#0" />
+            <element signature="e#4225#4230#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../btcsuite/btcd/btcjson/walletsvrcmds.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-10005">
+          <caret line="273" column="24" selection-start-line="273" selection-start-column="5" selection-end-line="273" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core/mysql/mysql.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="e#15#155#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/dbappstore.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/dbuser.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/dbcoin.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="74" column="5" selection-start-line="74" selection-start-column="5" selection-end-line="74" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/transfer/ethereum.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="96" column="49" lean-forward="true" selection-start-line="96" selection-start-column="49" selection-end-line="96" selection-end-column="49" />
+          <folding>
+            <element signature="n#!!block;n#TransactionEth#0" />
+            <element signature="n#!!block;n#TransactionToken#0" />
+            <element signature="n#!!block;n#GetEthBalance#0" />
+            <element signature="n#!!block;n#GetTokenBalance#0" />
+            <element signature="n#!!block;n#GetEthTransactions#0" />
+            <element signature="n#!!block;n#GetTokenTransactions#0" />
+            <element signature="n#!!block;n#buildTransfer#0" />
+            <element signature="n#!!block;n#sendRawTransaction#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mnemonic/mnemonic.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="240" column="36" selection-start-line="240" selection-start-column="36" selection-end-line="240" selection-end-column="36" />
+          <folding>
+            <element signature="e#18#361#0" expanded="true" />
+            <element signature="n#!!block;n#NewMnemonic#0" />
+            <element signature="n#!!block;n#MoreAccounts#0" />
+            <element signature="n#!!block;n#generateAccounts#0" />
+            <element signature="n#!!block;n#GenerateAccount#0" />
+            <element signature="n#!!block;n#GenerateBtcAccount#0" />
+          </folding>
         </state>
       </provider>
     </entry>

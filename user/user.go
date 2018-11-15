@@ -5,6 +5,7 @@ import (
 	"github.com/ExchangeProject/db"
 	"github.com/ExchangeProject/mnemonic"
 	"github.com/ExchangeProject/transfer"
+	"github.com/ethereum/go-ethereum/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -14,11 +15,11 @@ func VerifyAppId(appid string, appsecret string) bool {
 	//判断appid和appsecret是否合法
 	valid, err := db.AppIdIsValid(appid, appsecret)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("db.AppIdIsValid", err)
 		return false
 	}
 	if !valid {
-		fmt.Println("appip或appsecret非法")
+		log.Error("appip或appsecret非法")
 		return false
 	}
 	return true
@@ -44,7 +45,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "未知异常",
 		})
-		fmt.Println(err)
+		log.Error("db.IsExistByUserId", err)
 		return
 	}
 	//不存在就生成助记词
@@ -55,7 +56,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "生成助记词失败",
 			})
-			fmt.Println(err)
+			log.Error("mnemonic.GenerateMnemonic", err)
 			return
 		}
 		err = db.InsertUser(appid, userid, _mnemonic)
@@ -64,7 +65,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "写入用户失败",
 			})
-			fmt.Println("InsertUserErr: ", err)
+			log.Error("InsertUserErr: ", err)
 			return
 		}
 	} else {
@@ -75,7 +76,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "未知异常",
 			})
-			fmt.Println("IsCoinAddressExistErr: ", err)
+			log.Error("IsCoinAddressExistErr: ", err)
 			return
 		}
 		//如果存在直接返回
@@ -97,12 +98,11 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "当前数字货币不支持",
 		})
-		fmt.Println("InsertUserErr: ", err)
+		log.Error("InsertUserErr: ", err)
 		return
 	}
 	//m/44'/60'/0'/0
 	path := fmt.Sprintf("m/44'/%d'/0'/0/0", coinindex)
-	fmt.Println(coin, coinindex, path)
 	var info mnemonic.AccountInfo
 	if coin == "ETH" {
 		info, err = mnemonic.GenerateAccount(_mnemonic, path)
@@ -116,7 +116,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "地址生成失败",
 		})
-		fmt.Println("InsertUserErr: ", err)
+		log.Error("InsertUserErr: ", err)
 		return
 	}
 	err = db.AddCoinAddress(appid, userid, coin, info.PrivateKey, info.Address)
@@ -125,7 +125,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "写入数据失败",
 		})
-		fmt.Println("InsertUserErr: ", err)
+		log.Error("InsertUserErr: ", err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -168,7 +168,7 @@ func SendTo(c *gin.Context) {
 			"msg":  "用户不存在",
 		})
 		if err != nil {
-			fmt.Println(err)
+			log.Error("IsExistByUserId", err)
 		}
 		return
 	}
@@ -186,7 +186,7 @@ func SendTo(c *gin.Context) {
 			"msg":  "代币地址不存在",
 		})
 		if err != nil {
-			fmt.Println(err)
+			log.Error("IsCoinAddressExist", err)
 		}
 		return
 	}
@@ -199,7 +199,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				fmt.Println(err)
+				log.Error("TransactionBtc", err)
 			}
 			return
 		}
@@ -208,9 +208,6 @@ func SendTo(c *gin.Context) {
 			"txHex": txHex,
 			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
 		})
-		if err != nil {
-			fmt.Println(err)
-		}
 		return
 	case "USDT":
 		txHex, err := transfer.TransactionUsdt(fromAddress, toAddress, privKey, amount)
@@ -220,7 +217,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				fmt.Println(err)
+				log.Error("TransactionUsdt", err)
 			}
 			return
 		}
@@ -229,9 +226,6 @@ func SendTo(c *gin.Context) {
 			"txHex": txHex,
 			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
 		})
-		if err != nil {
-			fmt.Println(err)
-		}
 		return
 	case "ETH":
 		txHex, err := transfer.TransactionEth(toAddress, privKey, int64(amount))
@@ -241,7 +235,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				fmt.Println(err)
+				log.Error("TransactionEth", err)
 			}
 			return
 		}
@@ -250,9 +244,6 @@ func SendTo(c *gin.Context) {
 			"txHex": txHex,
 			"txUrl": fmt.Sprintf("https://etherscan.io/tx/%s", txHex),
 		})
-		if err != nil {
-			fmt.Println(err)
-		}
 		return
 	case "ERC-20":
 		tokenAddress := c.Query("tokenaddress")
@@ -263,7 +254,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				fmt.Println(err)
+				log.Error("TransactionToken", err)
 			}
 			return
 		}
@@ -272,9 +263,6 @@ func SendTo(c *gin.Context) {
 			"txHex": txHex,
 			"txUrl": fmt.Sprintf("https://etherscan.io/tx/%s", txHex),
 		})
-		if err != nil {
-			fmt.Println(err)
-		}
 		return
 	}
 }

@@ -38,8 +38,16 @@ type GobcyTxRef struct {
 	Received      string `json:"received"`
 }
 
+var (
+	gobcyToken   = "9184cf751ace44f090769b52643ade0b"
+	gobcyChain   = "test3"
+	omnicoreHost = "39.104.156.29:18332"
+	omnicoreUser = "omnicorerpc"
+	omnicorePass = "abcd1234"
+)
+
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
-	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	//讲私匙从wif格式转换为原始格式
 	privwif := privateKey
 	privb, _, _ := base58.CheckDecode(privwif)
@@ -51,13 +59,13 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	//Sign it locally
 	err = skel.Sign([]string{privstr})
 	if err != nil {
-		fmt.Println(err)
+		log.Error("skel.Sign", err)
 		return "", err
 	}
 	//Send TXSkeleton
 	skel, err = bcy.SendTX(skel)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("bcy.SendTx", err)
 		return "", err
 	}
 	return skel.Trans.Hash, nil
@@ -68,27 +76,28 @@ func TransactionUsdt(fromAddress string, toAddress string, privateKey string, am
 		HTTPPostMode: true,
 		DisableTLS:   true,
 		//rpc.blockchain.info
-		Host: "39.104.156.29:18332",
-		User: "omnicorerpc",
-		Pass: "abcd1234",
+		Host: omnicoreHost,
+		User: omnicoreUser,
+		Pass: omnicorePass,
 	}, nil)
 	if err != nil {
 		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
 		return
 	}
+	defer client.Disconnect()
 	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64))
 	if err != nil {
-		fmt.Println(err)
+		log.Error("client.OmniSend", err)
 		return "", err
 	}
 	return
 }
 
 func GetBalanceBtc(address string) (balance int, err error) {
-	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	addr, err := bcy.GetAddrBal(address, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("bcy.GetAddrBal", err)
 		return
 	}
 	return addr.Balance, nil
@@ -98,28 +107,28 @@ func GetBalanceUSDT(address string) (balance int, err error) {
 	client, err := rpcclient.New(&rpcclient.ConnConfig{
 		HTTPPostMode: true,
 		DisableTLS:   true,
-		//rpc.blockchain.info
-		Host: "39.104.156.29:18332",
-		User: "omnicorerpc",
-		Pass: "abcd1234",
+		Host:         omnicoreHost,
+		User:         omnicoreUser,
+		Pass:         omnicorePass,
 	}, nil)
 	if err != nil {
 		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
 		return
 	}
+	defer client.Disconnect()
 	balance, err = client.GetOmniBalance(address)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("client.GetOmniBalance", err)
 		return
 	}
 	return
 }
 
 func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
-	bcy := gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	addr, err = bcy.GetAddrFull(address, nil)
 	if err != nil {
-		fmt.Println(err)
+		log.Error("bcy.GetAddrFull", err)
 		return
 	}
 	return
@@ -129,20 +138,40 @@ func GetUsdtTransactions(address string, count int, skip int) (result []rpcclien
 	client, err := rpcclient.New(&rpcclient.ConnConfig{
 		HTTPPostMode: true,
 		DisableTLS:   true,
-		//rpc.blockchain.info
-		Host: "39.104.156.29:18332",
-		User: "omnicorerpc",
-		Pass: "abcd1234",
+		Host:         omnicoreHost,
+		User:         omnicoreUser,
+		Pass:         omnicorePass,
 	}, nil)
 	if err != nil {
 		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
 		return
 	}
+	defer client.Disconnect()
 	result, err = client.Omni_Listtransactions(address, count, skip)
 	if err != nil {
 		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
-		fmt.Println(err)
 		return
 	}
 	return result, err
+}
+
+func ImportPrivkey(privkey string, label string) (err error) {
+	client, err := rpcclient.New(&rpcclient.ConnConfig{
+		HTTPPostMode: true,
+		DisableTLS:   true,
+		Host:         omnicoreHost,
+		User:         omnicoreUser,
+		Pass:         omnicorePass,
+	}, nil)
+	if err != nil {
+		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		return
+	}
+	defer client.Disconnect()
+	wif, err := btcutil.DecodeWIF(privkey)
+	if err != nil {
+		log.Error("btcutil.DecodeWIF", err)
+		return
+	}
+	return client.ImportPrivKeyRescan(wif, label, true)
 }
