@@ -5,8 +5,8 @@ import (
 	"github.com/ExchangeProject/db"
 	"github.com/ExchangeProject/mnemonic"
 	"github.com/ExchangeProject/transfer"
-	"github.com/ethereum/go-ethereum/log"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	"net/http"
 	"strconv"
 )
@@ -15,11 +15,11 @@ func VerifyAppId(appid string, appsecret string) bool {
 	//判断appid和appsecret是否合法
 	valid, err := db.AppIdIsValid(appid, appsecret)
 	if err != nil {
-		log.Error("db.AppIdIsValid", err)
+		glog.Error(err)
 		return false
 	}
 	if !valid {
-		log.Error("appip或appsecret非法")
+		glog.Error("appip或appsecret非法")
 		return false
 	}
 	return true
@@ -45,7 +45,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "未知异常",
 		})
-		log.Error("db.IsExistByUserId", err)
+		glog.Error(err)
 		return
 	}
 	//不存在就生成助记词
@@ -56,7 +56,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "生成助记词失败",
 			})
-			log.Error("mnemonic.GenerateMnemonic", err)
+			glog.Error(err)
 			return
 		}
 		err = db.InsertUser(appid, userid, _mnemonic)
@@ -65,7 +65,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "写入用户失败",
 			})
-			log.Error("InsertUserErr: ", err)
+			glog.Error(err)
 			return
 		}
 	} else {
@@ -76,7 +76,7 @@ func New(c *gin.Context) {
 				"code": -1,
 				"msg":  "未知异常",
 			})
-			log.Error("IsCoinAddressExistErr: ", err)
+			glog.Error(err)
 			return
 		}
 		//如果存在直接返回
@@ -98,7 +98,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "当前数字货币不支持",
 		})
-		log.Error("InsertUserErr: ", err)
+		glog.Error(err)
 		return
 	}
 	//m/44'/60'/0'/0
@@ -116,7 +116,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "地址生成失败",
 		})
-		log.Error("InsertUserErr: ", err)
+		glog.Error(err)
 		return
 	}
 	err = db.AddCoinAddress(appid, userid, coin, info.PrivateKey, info.Address)
@@ -125,7 +125,7 @@ func New(c *gin.Context) {
 			"code": -1,
 			"msg":  "写入数据失败",
 		})
-		log.Error("InsertUserErr: ", err)
+		glog.Error(err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -168,7 +168,7 @@ func SendTo(c *gin.Context) {
 			"msg":  "用户不存在",
 		})
 		if err != nil {
-			log.Error("IsExistByUserId", err)
+			glog.Error(err)
 		}
 		return
 	}
@@ -186,7 +186,7 @@ func SendTo(c *gin.Context) {
 			"msg":  "代币地址不存在",
 		})
 		if err != nil {
-			log.Error("IsCoinAddressExist", err)
+			glog.Error(err)
 		}
 		return
 	}
@@ -199,7 +199,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				log.Error("TransactionBtc", err)
+				glog.Error(err)
 			}
 			return
 		}
@@ -217,7 +217,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				log.Error("TransactionUsdt", err)
+				glog.Error(err)
 			}
 			return
 		}
@@ -235,7 +235,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				log.Error("TransactionEth", err)
+				glog.Error(err)
 			}
 			return
 		}
@@ -254,7 +254,7 @@ func SendTo(c *gin.Context) {
 				"msg":  "交易失败",
 			})
 			if err != nil {
-				log.Error("TransactionToken", err)
+				glog.Error(err)
 			}
 			return
 		}

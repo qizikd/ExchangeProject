@@ -2,12 +2,11 @@ package transfer
 
 import (
 	"encoding/hex"
-	"fmt"
 	"github.com/blockcypher/gobcy"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/base58"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/golang/glog"
 	"strconv"
 )
 
@@ -59,13 +58,13 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	//Sign it locally
 	err = skel.Sign([]string{privstr})
 	if err != nil {
-		log.Error("skel.Sign", err)
+		glog.Error(err)
 		return "", err
 	}
 	//Send TXSkeleton
 	skel, err = bcy.SendTX(skel)
 	if err != nil {
-		log.Error("bcy.SendTx", err)
+		glog.Error(err)
 		return "", err
 	}
 	return skel.Trans.Hash, nil
@@ -81,13 +80,13 @@ func TransactionUsdt(fromAddress string, toAddress string, privateKey string, am
 		Pass: omnicorePass,
 	}, nil)
 	if err != nil {
-		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
 	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64))
 	if err != nil {
-		log.Error("client.OmniSend", err)
+		glog.Error(err)
 		return "", err
 	}
 	return
@@ -97,7 +96,7 @@ func GetBalanceBtc(address string) (balance int, err error) {
 	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	addr, err := bcy.GetAddrBal(address, nil)
 	if err != nil {
-		log.Error("bcy.GetAddrBal", err)
+		glog.Error(err)
 		return
 	}
 	return addr.Balance, nil
@@ -112,13 +111,13 @@ func GetBalanceUSDT(address string) (balance int, err error) {
 		Pass:         omnicorePass,
 	}, nil)
 	if err != nil {
-		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
 	balance, err = client.GetOmniBalance(address)
 	if err != nil {
-		log.Error("client.GetOmniBalance", err)
+		glog.Error(err)
 		return
 	}
 	return
@@ -128,7 +127,7 @@ func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
 	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	addr, err = bcy.GetAddrFull(address, nil)
 	if err != nil {
-		log.Error("bcy.GetAddrFull", err)
+		glog.Error(err)
 		return
 	}
 	return
@@ -143,13 +142,13 @@ func GetUsdtTransactions(address string, count int, skip int) (result []rpcclien
 		Pass:         omnicorePass,
 	}, nil)
 	if err != nil {
-		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
 	result, err = client.Omni_Listtransactions(address, count, skip)
 	if err != nil {
-		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		glog.Error(err)
 		return
 	}
 	return result, err
@@ -164,13 +163,13 @@ func ImportPrivkey(privkey string, label string) (err error) {
 		Pass:         omnicorePass,
 	}, nil)
 	if err != nil {
-		log.Error(fmt.Sprintf("error creating new btc client: %v", err))
+		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
 	wif, err := btcutil.DecodeWIF(privkey)
 	if err != nil {
-		log.Error("btcutil.DecodeWIF", err)
+		glog.Error(err)
 		return
 	}
 	return client.ImportPrivKeyRescan(wif, label, true)

@@ -14,8 +14,8 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/sha3"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/golang/glog"
 	"io/ioutil"
 	"math/big"
 	"net/http"
@@ -100,7 +100,7 @@ var etherscanApiKey = "Y4E31DPUZHG7XQDVQU31233GHMB98YBTIW"
 func TransactionEth(toAddress string, privateKey string, amount int64) (tx string, err error) {
 	tx, err = sendRawTransaction(privateKey, toAddress, nil, amount)
 	if err != nil {
-		log.Error("sendRawTransaction", err)
+		glog.Error("sendRawTransaction", err)
 		return
 	}
 	return
@@ -110,7 +110,7 @@ func TransactionToken(toAddress string, tokenAddress string, privateKey string, 
 	data := buildTransfer(toAddress, tokenAmount)
 	tx, err = sendRawTransaction(privateKey, tokenAddress, data, 0)
 	if err != nil {
-		log.Error("sendRawTransaction", err)
+		glog.Error(err)
 		return
 	}
 	return
@@ -119,13 +119,13 @@ func TransactionToken(toAddress string, tokenAddress string, privateKey string, 
 func GetEthBalance(address string) (amount big.Int, err error) {
 	client, err := ethclient.Dial("https://mainnet.infura.io")
 	if err != nil {
-		log.Error("连接infura节点失败", err)
+		glog.Error("连接infura节点失败", err)
 		return
 	}
 	defer client.Close()
 	balance, err := client.BalanceAt(context.Background(), common.HexToAddress(address), nil)
 	if err != nil {
-		log.Error("获取余额失败", err)
+		glog.Error("获取Eth余额失败", err)
 		return
 	}
 	return *balance, nil
@@ -134,18 +134,18 @@ func GetEthBalance(address string) (amount big.Int, err error) {
 func GetTokenBalance(tokenAddress string, address string) (amount big.Int, err error) {
 	client, err := ethclient.Dial("https://mainnet.infura.io")
 	if err != nil {
-		log.Error("连接infura节点失败", err)
+		glog.Error("连接infura节点失败", err)
 		return
 	}
 	defer client.Close()
 	instance, err := token.NewToken(common.HexToAddress(tokenAddress), client)
 	if err != nil {
-		log.Error("初始化token实例失败", err)
+		glog.Error(err)
 		return
 	}
 	balance, err := instance.BalanceOf(&bind.CallOpts{}, common.HexToAddress(address))
 	if err != nil {
-		log.Error("获取token balance失败", err)
+		glog.Error("获取token balance失败", err)
 		return
 	}
 	return *balance, nil
@@ -158,7 +158,7 @@ func GetEthTransactions(address string, page int, offset int) (txs []EtherscanEt
 		address, etherscanApiKey, page, offset)
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Error("http请求失败", url, err)
+		glog.Error("http请求失败", url, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -167,24 +167,24 @@ func GetEthTransactions(address string, page int, offset int) (txs []EtherscanEt
 		//fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
 		if resp.StatusCode == http.StatusForbidden {
 			body, _ := ioutil.ReadAll(resp.Body)
-			log.Error("httpRequst", url, string(body))
+			glog.Error(url, string(body))
 			//fmt.Println(string(body))
 		}
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error("读取request body失败", err)
+		glog.Error(err)
 		return
 	}
 	var ops EtherscanEthResult
 	err = json.Unmarshal(body, &ops)
 	if err != nil {
-		log.Error("解析json字符串失败", err)
+		glog.Error("解析json字符串失败", err)
 		return
 	}
 	if ops.Status == "0" {
-		log.Error("返回错误", url, ops.Message)
+		glog.Error("返回错误", url, ops.Message)
 		err = errors.New(ops.Message)
 		return
 	}
@@ -198,7 +198,7 @@ func GetTokenTransactions(tokenaddress string, address string, page int, offset 
 	//url := fmt.Sprintf("http://api.ethplorer.io/getAddressHistory/%s?apiKey=%s&token=%s&type=transfer", address, ethplorerApiKey, tokenaddress)
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Error("http请求失败", url, err)
+		glog.Error("http请求失败", url, err)
 		return
 	}
 	defer resp.Body.Close()
@@ -207,23 +207,23 @@ func GetTokenTransactions(tokenaddress string, address string, page int, offset 
 		fmt.Println("HTTP " + strconv.Itoa(resp.StatusCode) + " " + http.StatusText(resp.StatusCode))
 		if resp.StatusCode == http.StatusForbidden {
 			body, _ := ioutil.ReadAll(resp.Body)
-			log.Error("httpRequst", url, string(body))
+			glog.Error(url, string(body))
 		}
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Error("读取request body失败", err)
+		glog.Error(err)
 		return
 	}
 	var ops EtherscanTokenResult
 	err = json.Unmarshal(body, &ops)
 	if err != nil {
-		log.Error("解析json字符串失败", err)
+		glog.Error("解析json字符串失败", err)
 		return
 	}
 	if ops.Status == "0" {
-		log.Error("返回错误", url, ops.Message)
+		glog.Error("返回错误", url, ops.Message)
 		err = errors.New(ops.Message)
 		return
 	}
@@ -249,21 +249,21 @@ func buildTransfer(toAddressHex string, tokenAmount int64) (data []byte) {
 func sendRawTransaction(privatekey string, toAddressHex string, data []byte, value int64) (tx string, err error) {
 	client, err := ethclient.Dial("https://mainnet.infura.io")
 	if err != nil {
-		log.Error("连接infura节点失败", err)
+		glog.Error("连接infura节点失败", err)
 		return
 	}
 	defer client.Close()
 	//发送方私匙
 	privateKey, err := crypto.HexToECDSA(privatekey)
 	if err != nil {
-		log.Error("私钥转换失败", err)
+		glog.Error(err)
 		return
 	}
 	//发送方公匙
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Error("error casting public key to ECDSA", err)
+		glog.Error("error casting public key to ECDSA", err)
 		return
 	}
 	//from地址
@@ -271,13 +271,13 @@ func sendRawTransaction(privatekey string, toAddressHex string, data []byte, val
 	//获取noce值
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		log.Error("获取noce值失败", err)
+		glog.Error(err)
 		return
 	}
 	//获取gasPrice
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		log.Error("获取gasprice失败", err)
+		glog.Error(err)
 		return
 	}
 	//fmt.Println("gasPrice:", gasPrice)
@@ -291,7 +291,7 @@ func sendRawTransaction(privatekey string, toAddressHex string, data []byte, val
 		Data:     data,
 	})
 	if err != nil {
-		log.Error("获取gaslimit失败", err)
+		glog.Error(err)
 	}
 
 	//gasLimit := uint64(300000)
@@ -302,13 +302,13 @@ func sendRawTransaction(privatekey string, toAddressHex string, data []byte, val
 
 	chainID, err := client.NetworkID(context.Background())
 	if err != nil {
-		log.Error("获取chainID失败", err)
+		glog.Error(err)
 		return
 	}
 
 	signedTx, err := types.SignTx(transaction, types.NewEIP155Signer(chainID), privateKey)
 	if err != nil {
-		log.Error("签名交易失败", err)
+		glog.Error(err)
 		return
 	}
 
@@ -322,7 +322,7 @@ func sendRawTransaction(privatekey string, toAddressHex string, data []byte, val
 
 	err = client.SendTransaction(context.Background(), tx2)
 	if err != nil {
-		log.Error("发送交易失败", err)
+		glog.Error(err)
 		return
 	}
 	return tx2.Hash().Hex(), nil

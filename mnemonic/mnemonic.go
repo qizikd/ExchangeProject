@@ -7,8 +7,8 @@ import (
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/hdkeychain"
-	"github.com/ethereum/go-ethereum/log"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
 	"github.com/miguelmota/go-ethereum-hdwallet"
 	"github.com/tyler-smith/go-bip32"
 	"github.com/tyler-smith/go-bip39"
@@ -24,7 +24,7 @@ type AccountInfo struct {
 func NewMnemonic(c *gin.Context) {
 	mnemonic, err := GenerateMnemonic()
 	if err != nil {
-		log.Error("生成助记词失败", err)
+		glog.Error("生成助记词失败", err)
 		return
 	}
 	c.JSON(200, gin.H{
@@ -40,7 +40,7 @@ func NewAccounts(c *gin.Context) {
 			"errcode": -1,
 			"msg":     err.Error(),
 		}
-		log.Error("生成助记词失败", err)
+		glog.Error(err)
 		c.JSON(http.StatusOK, result)
 		return
 	}
@@ -71,7 +71,7 @@ func generateAccounts(c *gin.Context, mnemonic string, p string) {
 				"errcode": 1,
 				"msg":     "path 无效",
 			}
-			log.Error("发生异常", result)
+			glog.Error(result)
 			c.JSON(http.StatusOK, result)
 		}
 	}()
@@ -83,7 +83,7 @@ func generateAccounts(c *gin.Context, mnemonic string, p string) {
 			"errcode": -2,
 			"msg":     err.Error(),
 		}
-		log.Error("生成Seed失败", err)
+		glog.Error(err)
 		c.JSON(http.StatusOK, result)
 		return
 	}
@@ -95,7 +95,7 @@ func generateAccounts(c *gin.Context, mnemonic string, p string) {
 			"errcode": -3,
 			"msg":     err.Error(),
 		}
-		log.Error("生成account失败", err)
+		glog.Error(err)
 		c.JSON(http.StatusOK, result)
 		return
 	}
@@ -105,7 +105,7 @@ func generateAccounts(c *gin.Context, mnemonic string, p string) {
 			"errcode": -4,
 			"msg":     err.Error(),
 		}
-		log.Error("获取公钥失败", err)
+		glog.Error(err)
 		c.JSON(http.StatusOK, result)
 		return
 	}
@@ -115,7 +115,7 @@ func generateAccounts(c *gin.Context, mnemonic string, p string) {
 			"errcode": -5,
 			"msg":     err.Error(),
 		}
-		log.Error("获取私钥失败", err)
+		glog.Error(err)
 		c.JSON(http.StatusOK, result)
 		return
 	}
@@ -135,7 +135,7 @@ func GenerateAccount(mnemonic string, p string) (myAccount AccountInfo, err erro
 
 	defer func() {
 		if err2 := recover(); err2 != nil {
-			log.Error("GenerateAccount发生未知错误", err2)
+			glog.Error(err2)
 			err = errors.New("未知错误")
 		}
 	}()
@@ -148,25 +148,25 @@ func GenerateAccount(mnemonic string, p string) (myAccount AccountInfo, err erro
 
 	wallet, err := hdwallet.NewFromSeed(seed)
 	if err != nil {
-		log.Error("生成Seed失败", err)
+		glog.Error(err)
 		return
 	}
 
 	path := hdwallet.MustParseDerivationPath(p)
 	account, err := wallet.Derive(path, true)
 	if err != nil {
-		log.Error("生成账户失败", err)
+		glog.Error(err)
 		return
 	}
 
 	myAccount.PulickKey, err = wallet.PublicKeyHex(account)
 	if err != nil {
-		log.Error("获取公钥失败", err)
+		glog.Error(err)
 		return
 	}
 	myAccount.PrivateKey, err = wallet.PrivateKeyHex(account)
 	if err != nil {
-		log.Error("获取私钥失败", err)
+		glog.Error(err)
 		return
 	}
 	myAccount.Address = account.Address.Hex()
@@ -176,7 +176,7 @@ func GenerateAccount(mnemonic string, p string) (myAccount AccountInfo, err erro
 func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err error) {
 	defer func() {
 		if err2 := recover(); err2 != nil {
-			log.Error("GenerateBtcAccount发生未知错误", err2)
+			glog.Error(err2)
 			err = errors.New("未知错误")
 		}
 	}()
@@ -191,7 +191,7 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 	for _, n := range path {
 		child, err = child.Child(n)
 		if err != nil {
-			log.Error("获取子账号失败", err)
+			glog.Error(err)
 			return
 		}
 	}
@@ -204,19 +204,19 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 	//wif
 	private_key, err := child.ECPrivKey()
 	if err != nil {
-		log.Error("child.ECPrivKey", err)
+		glog.Error(err)
 		return
 	}
 	//TODO 临时生成btc-test3地址
 	private_wif, err := btcutil.NewWIF(private_key, &chaincfg.TestNet3Params, true)
 	if err != nil {
-		log.Error("btcutil.NewWIF", err)
+		glog.Error(err)
 		return
 	}
 	//TODO 临时生成btc-test3地址
 	address_key, err := child.Address(&chaincfg.TestNet3Params)
 	if err != nil {
-		log.Error("child.Address", err)
+		glog.Error(err)
 		return
 	}
 	//private_str := private_wif.String()
@@ -233,12 +233,12 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 func GenerateMnemonic() (mnemonic string, err error) {
 	entropy, err := bip39.NewEntropy(128)
 	if err != nil {
-		log.Error("bip39.NewEntropy", err)
+		glog.Error(err)
 		return
 	}
 	mnemonic, err = bip39.NewMnemonic(entropy)
 	if err != nil {
-		log.Error("bip39.NewMnemonic", err)
+		glog.Error(err)
 		return
 	}
 	return
