@@ -182,8 +182,7 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 	}()
 
 	seed := bip39.NewSeed(mnemonic, "")
-	//TODO 临时生成btc-test3地址
-	extkey, err := hdkeychain.NewMaster(seed, &chaincfg.TestNet3Params)
+	extkey, err := hdkeychain.NewMaster(seed, &chaincfg.MainNetParams)
 
 	//根据extkey计算对应path下的key
 	path := hdwallet.MustParseDerivationPath(p)
@@ -207,14 +206,12 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 		glog.Error(err)
 		return
 	}
-	//TODO 临时生成btc-test3地址
-	private_wif, err := btcutil.NewWIF(private_key, &chaincfg.TestNet3Params, true)
+	private_wif, err := btcutil.NewWIF(private_key, &chaincfg.MainNetParams, true)
 	if err != nil {
 		glog.Error(err)
 		return
 	}
-	//TODO 临时生成btc-test3地址
-	address_key, err := child.Address(&chaincfg.TestNet3Params)
+	address_key, err := child.Address(&chaincfg.MainNetParams)
 	if err != nil {
 		glog.Error(err)
 		return

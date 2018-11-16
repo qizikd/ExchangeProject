@@ -39,8 +39,8 @@ type GobcyTxRef struct {
 
 var (
 	gobcyToken   = "9184cf751ace44f090769b52643ade0b"
-	gobcyChain   = "test3"
-	omnicoreHost = "39.104.156.29:18332"
+	gobcyChain   = "main"
+	omnicoreHost = "47.92.148.83:8332"
 	omnicoreUser = "omnicorerpc"
 	omnicorePass = "abcd1234"
 )

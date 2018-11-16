@@ -107,8 +107,7 @@ func New(c *gin.Context) {
 	if coin == "ETH" {
 		info, err = mnemonic.GenerateAccount(_mnemonic, path)
 	} else if coin == "BTC" {
-		//TODO 临时生成btc-test3地址
-		path = "m/44'/1'/1'/0/0"
+		//path = "m/44'/1'/1'/0/0"
 		info, err = mnemonic.GenerateBtcAccount(_mnemonic, path)
 	}
 	if err != nil {
