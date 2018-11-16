@@ -198,9 +198,6 @@ func SendTo(c *gin.Context) {
 				"code": -1,
 				"msg":  "交易失败",
 			})
-			if err != nil {
-				glog.Error(err)
-			}
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -216,9 +213,6 @@ func SendTo(c *gin.Context) {
 				"code": -1,
 				"msg":  "交易失败",
 			})
-			if err != nil {
-				glog.Error(err)
-			}
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -234,9 +228,6 @@ func SendTo(c *gin.Context) {
 				"code": -1,
 				"msg":  "交易失败",
 			})
-			if err != nil {
-				glog.Error(err)
-			}
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{
@@ -253,9 +244,6 @@ func SendTo(c *gin.Context) {
 				"code": -1,
 				"msg":  "交易失败",
 			})
-			if err != nil {
-				glog.Error(err)
-			}
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{

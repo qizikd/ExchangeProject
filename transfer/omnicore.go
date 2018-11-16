@@ -11,7 +11,6 @@ func SyncImportPrivkey() {
 		users, err := db.GetNoImportUserBtcPrivkey()
 		if err != nil {
 			glog.Error(err)
-			glog.Error(err)
 			time.Sleep(10 * time.Second)
 			continue
 		}

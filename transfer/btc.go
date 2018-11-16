@@ -172,5 +172,5 @@ func ImportPrivkey(privkey string, label string) (err error) {
 		glog.Error(err)
 		return
 	}
-	return client.ImportPrivKeyRescan(wif, label, true)
+	return client.ImportPrivKeyRescan(wif, label, false)
 }
