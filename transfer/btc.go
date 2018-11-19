@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type GobcyAddInfo struct {
@@ -226,5 +227,8 @@ func ImportPrivkey(privkey string, label string) (err error) {
 		glog.Error(err)
 		return
 	}
-	return client.ImportPrivKeyRescan(wif, label, false)
+	fmt.Println(time.Now(), "私钥导入开始")
+	err = client.ImportPrivKeyRescan(wif, label, true)
+	fmt.Println(time.Now(), "私钥导入结束")
+	return err
 }
