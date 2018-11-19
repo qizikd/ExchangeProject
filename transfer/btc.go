@@ -49,6 +49,7 @@ type OmniApiTxRef struct {
 	Transactions []rpcclient.Omni_ListtransactionResult `json:"transactions"`
 }
 
+//线上参数
 var (
 	gobcyToken     = "9184cf751ace44f090769b52643ade0b"
 	gobcyChain     = "main"
@@ -58,6 +59,17 @@ var (
 	omnipropertyid = 31
 )
 
+//测试参数
+/*
+var (
+	gobcyToken     = "9184cf751ace44f090769b52643ade0b"
+	gobcyChain     = "test3"
+	omnicoreHost   = "39.104.156.29:18332"
+	omnicoreUser   = "omnicorerpc"
+	omnicorePass   = "abcd1234"
+	omnipropertyid = 1
+)
+*/
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
 	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
 	//讲私匙从wif格式转换为原始格式
