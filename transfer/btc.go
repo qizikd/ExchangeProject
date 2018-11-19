@@ -2,12 +2,18 @@ package transfer
 
 import (
 	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/blockcypher/gobcy"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/golang/glog"
+	"io/ioutil"
+	"net/http"
 	"strconv"
+	"strings"
 )
 
 type GobcyAddInfo struct {
@@ -35,6 +41,12 @@ type GobcyTxRef struct {
 	Ref_balance   int    `json:"ref_balance"`
 	Confirmed     string `json:"confirmed"`
 	Received      string `json:"received"`
+}
+
+type OmniApiTxRef struct {
+	Address      string                                 `json:"address"`
+	Pages        int                                    `json:"pages"`
+	Transactions []rpcclient.Omni_ListtransactionResult `json:"transactions"`
 }
 
 var (
@@ -133,6 +145,35 @@ func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
 	return
 }
 
+func GetUsdtTransactions(address string, page int) (result []rpcclient.Omni_ListtransactionResult, err error) {
+	url := "https://api.omniexplorer.info/v1/transaction/address"
+	resp, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(fmt.Sprintf("addr=%s&page=%d", address, page)))
+	if err != nil {
+		glog.Error("http请求失败", url, err)
+		return
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取交易失败")
+		body, _ := ioutil.ReadAll(resp.Body)
+		glog.Error(url, string(body))
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Error(err)
+		return
+	}
+	var ops OmniApiTxRef
+	err = json.Unmarshal(body, &ops)
+	if err != nil {
+		glog.Error("解析json字符串失败", err)
+		return
+	}
+	return ops.Transactions, nil
+}
+
+/*
 func GetUsdtTransactions(address string, count int, skip int) (result []rpcclient.Omni_ListtransactionResult, err error) {
 	client, err := rpcclient.New(&rpcclient.ConnConfig{
 		HTTPPostMode: true,
@@ -153,7 +194,7 @@ func GetUsdtTransactions(address string, count int, skip int) (result []rpcclien
 	}
 	return result, err
 }
-
+*/
 func ImportPrivkey(privkey string, label string) (err error) {
 	client, err := rpcclient.New(&rpcclient.ConnConfig{
 		HTTPPostMode: true,

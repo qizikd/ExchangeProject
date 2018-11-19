@@ -483,14 +483,9 @@ func UsdtTransactions(c *gin.Context) {
 	if err != nil || page == 0 {
 		page = 1
 	}
-	page = page - 1
 	//omnicore page是从0开始
-	s := c.Query("pagesize")
-	pagesize, err := strconv.Atoi(s)
-	if err != nil {
-		pagesize = 10
-	}
-	txs, err := transfer.GetUsdtTransactions(address, pagesize, page*pagesize)
+	page = page - 1
+	txs, err := transfer.GetUsdtTransactions(address, page)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
