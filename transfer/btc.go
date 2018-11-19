@@ -50,11 +50,12 @@ type OmniApiTxRef struct {
 }
 
 var (
-	gobcyToken   = "9184cf751ace44f090769b52643ade0b"
-	gobcyChain   = "main"
-	omnicoreHost = "47.92.148.83:8332"
-	omnicoreUser = "omnicorerpc"
-	omnicorePass = "abcd1234"
+	gobcyToken     = "9184cf751ace44f090769b52643ade0b"
+	gobcyChain     = "main"
+	omnicoreHost   = "47.92.148.83:8332"
+	omnicoreUser   = "omnicorerpc"
+	omnicorePass   = "abcd1234"
+	omnipropertyid = 31
 )
 
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
@@ -96,7 +97,7 @@ func TransactionUsdt(fromAddress string, toAddress string, privateKey string, am
 		return
 	}
 	defer client.Disconnect()
-	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64))
+	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), omnipropertyid)
 	if err != nil {
 		glog.Error(err)
 		return "", err
@@ -127,7 +128,7 @@ func GetBalanceUSDT(address string) (balance int, err error) {
 		return
 	}
 	defer client.Disconnect()
-	balance, err = client.GetOmniBalance(address)
+	balance, err = client.GetOmniBalance(address, omnipropertyid)
 	if err != nil {
 		glog.Error(err)
 		return
