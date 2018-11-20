@@ -2,9 +2,8 @@ package settings
 
 import "database/sql"
 
-
-
-var(
+var (
 	MySqlSourceName = "exchange:sSfwRTwp4Lnp5CM2@tcp(39.104.156.29:3306)/exchange"
-	DBMysql *sql.DB
+	DBMysql         *sql.DB
+	IsBTCTestNet3   = false
 )

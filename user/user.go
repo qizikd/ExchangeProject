@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ExchangeProject/db"
 	"github.com/ExchangeProject/mnemonic"
+	"github.com/ExchangeProject/settings"
 	"github.com/ExchangeProject/transfer"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
@@ -107,7 +108,9 @@ func New(c *gin.Context) {
 	if coin == "ETH" {
 		info, err = mnemonic.GenerateAccount(_mnemonic, path)
 	} else if coin == "BTC" {
-		//path = "m/44'/1'/1'/0/0"
+		if settings.IsBTCTestNet3 {
+			path = "m/44'/1'/1'/0/0"
+		}
 		info, err = mnemonic.GenerateBtcAccount(_mnemonic, path)
 	}
 	if err != nil {

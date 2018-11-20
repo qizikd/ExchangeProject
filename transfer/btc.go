@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ExchangeProject/settings"
 	"github.com/blockcypher/gobcy"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcutil"
@@ -50,29 +51,40 @@ type OmniApiTxRef struct {
 	Transactions []rpcclient.Omni_ListtransactionResult `json:"transactions"`
 }
 
-//线上参数
-var (
-	gobcyToken     = "9184cf751ace44f090769b52643ade0b"
-	gobcyChain     = "main"
-	omnicoreHost   = "47.92.148.83:8332"
-	omnicoreUser   = "omnicorerpc"
-	omnicorePass   = "abcd1234"
-	omnipropertyid = 31
-)
+func newGobcy() (api gobcy.API) {
+	if settings.IsBTCTestNet3 {
+		api = gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+	} else {
+		api = gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "main"}
+	}
+	return
+}
 
-//测试参数
-/*
-var (
-	gobcyToken     = "9184cf751ace44f090769b52643ade0b"
-	gobcyChain     = "test3"
-	omnicoreHost   = "39.104.156.29:18332"
-	omnicoreUser   = "omnicorerpc"
-	omnicorePass   = "abcd1234"
-	omnipropertyid = 1
-)
-*/
+func newOmniClient() (client *rpcclient.Client, err error) {
+	if settings.IsBTCTestNet3 {
+		client, err = rpcclient.New(&rpcclient.ConnConfig{
+			HTTPPostMode: true,
+			DisableTLS:   true,
+			//rpc.blockchain.info
+			Host: "39.104.156.29:18332",
+			User: "omnicorerpc",
+			Pass: "abcd1234",
+		}, nil)
+	} else {
+		client, err = rpcclient.New(&rpcclient.ConnConfig{
+			HTTPPostMode: true,
+			DisableTLS:   true,
+			//rpc.blockchain.info
+			Host: "47.92.148.83:8332",
+			User: "omnicorerpc",
+			Pass: "abcd1234",
+		}, nil)
+	}
+	return
+}
+
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
-	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
+	bcy := newGobcy()
 	//讲私匙从wif格式转换为原始格式
 	privwif := privateKey
 	privb, _, _ := base58.CheckDecode(privwif)
@@ -82,6 +94,7 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	trans := gobcy.TempNewTX(fromAddress, toAddress, amount)
 	skel, err := bcy.NewTX(trans, false)
 	//Sign it locally
+	fmt.Println(skel.ToSign, privstr, len(skel.ToSign), len([]string{privstr}))
 	err = skel.Sign([]string{privstr})
 	if err != nil {
 		glog.Error(err)
@@ -97,20 +110,17 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 }
 
 func TransactionUsdt(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
-	client, err := rpcclient.New(&rpcclient.ConnConfig{
-		HTTPPostMode: true,
-		DisableTLS:   true,
-		//rpc.blockchain.info
-		Host: omnicoreHost,
-		User: omnicoreUser,
-		Pass: omnicorePass,
-	}, nil)
+	client, err := newOmniClient()
 	if err != nil {
 		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
-	tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), omnipropertyid)
+	if settings.IsBTCTestNet3 {
+		tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), 1)
+	} else {
+		tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), 31)
+	}
 	if err != nil {
 		glog.Error(err)
 		return "", err
@@ -119,7 +129,7 @@ func TransactionUsdt(fromAddress string, toAddress string, privateKey string, am
 }
 
 func GetBalanceBtc(address string) (balance int, err error) {
-	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
+	bcy := newGobcy()
 	addr, err := bcy.GetAddrBal(address, nil)
 	if err != nil {
 		glog.Error(err)
@@ -129,19 +139,17 @@ func GetBalanceBtc(address string) (balance int, err error) {
 }
 
 func GetBalanceUSDT(address string) (balance int, err error) {
-	client, err := rpcclient.New(&rpcclient.ConnConfig{
-		HTTPPostMode: true,
-		DisableTLS:   true,
-		Host:         omnicoreHost,
-		User:         omnicoreUser,
-		Pass:         omnicorePass,
-	}, nil)
+	client, err := newOmniClient()
 	if err != nil {
 		glog.Error("error creating new btc client: ", err)
 		return
 	}
 	defer client.Disconnect()
-	balance, err = client.GetOmniBalance(address, omnipropertyid)
+	if settings.IsBTCTestNet3 {
+		balance, err = client.GetOmniBalance(address, 1)
+	} else {
+		balance, err = client.GetOmniBalance(address, 31)
+	}
 	if err != nil {
 		glog.Error(err)
 		return
@@ -150,7 +158,7 @@ func GetBalanceUSDT(address string) (balance int, err error) {
 }
 
 func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
-	bcy := gobcy.API{gobcyToken, "btc", gobcyChain}
+	bcy := newGobcy()
 	addr, err = bcy.GetAddrFull(address, nil)
 	if err != nil {
 		glog.Error(err)
@@ -189,13 +197,7 @@ func GetUsdtTransactions(address string, page int) (result []rpcclient.Omni_List
 
 /*
 func GetUsdtTransactions(address string, count int, skip int) (result []rpcclient.Omni_ListtransactionResult, err error) {
-	client, err := rpcclient.New(&rpcclient.ConnConfig{
-		HTTPPostMode: true,
-		DisableTLS:   true,
-		Host:         omnicoreHost,
-		User:         omnicoreUser,
-		Pass:         omnicorePass,
-	}, nil)
+	client, err := newOmniClient()
 	if err != nil {
 		glog.Error("error creating new btc client: ", err)
 		return
@@ -210,13 +212,7 @@ func GetUsdtTransactions(address string, count int, skip int) (result []rpcclien
 }
 */
 func ImportPrivkey(privkey string, label string) (err error) {
-	client, err := rpcclient.New(&rpcclient.ConnConfig{
-		HTTPPostMode: true,
-		DisableTLS:   true,
-		Host:         omnicoreHost,
-		User:         omnicoreUser,
-		Pass:         omnicorePass,
-	}, nil)
+	client, err := newOmniClient()
 	if err != nil {
 		glog.Error("error creating new btc client: ", err)
 		return
@@ -228,7 +224,7 @@ func ImportPrivkey(privkey string, label string) (err error) {
 		return
 	}
 	fmt.Println(time.Now(), "私钥导入开始")
-	err = client.ImportPrivKeyRescan(wif, label, true)
+	err = client.ImportPrivKeyRescan(wif, label, false)
 	fmt.Println(time.Now(), "私钥导入结束")
 	return err
 }

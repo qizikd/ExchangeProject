@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/ExchangeProject/settings"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/hdkeychain"
@@ -182,7 +183,12 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 	}()
 
 	seed := bip39.NewSeed(mnemonic, "")
-	extkey, err := hdkeychain.NewMaster(seed, &chaincfg.MainNetParams)
+	var extkey *hdkeychain.ExtendedKey
+	if settings.IsBTCTestNet3 {
+		extkey, err = hdkeychain.NewMaster(seed, &chaincfg.TestNet3Params)
+	} else {
+		extkey, err = hdkeychain.NewMaster(seed, &chaincfg.MainNetParams)
+	}
 
 	//根据extkey计算对应path下的key
 	path := hdwallet.MustParseDerivationPath(p)
@@ -206,12 +212,23 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 		glog.Error(err)
 		return
 	}
-	private_wif, err := btcutil.NewWIF(private_key, &chaincfg.MainNetParams, true)
+	var private_wif *btcutil.WIF
+	if settings.IsBTCTestNet3 {
+		private_wif, err = btcutil.NewWIF(private_key, &chaincfg.TestNet3Params, true)
+	} else {
+		private_wif, err = btcutil.NewWIF(private_key, &chaincfg.MainNetParams, true)
+	}
+
 	if err != nil {
 		glog.Error(err)
 		return
 	}
-	address_key, err := child.Address(&chaincfg.MainNetParams)
+	var address_key *btcutil.AddressPubKeyHash
+	if settings.IsBTCTestNet3 {
+		address_key, err = child.Address(&chaincfg.TestNet3Params)
+	} else {
+		address_key, err = child.Address(&chaincfg.MainNetParams)
+	}
 	if err != nil {
 		glog.Error(err)
 		return
