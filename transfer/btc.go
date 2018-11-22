@@ -8,14 +8,11 @@ import (
 	"github.com/ExchangeProject/settings"
 	"github.com/blockcypher/gobcy"
 	"github.com/btcsuite/btcd/rpcclient"
-	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/golang/glog"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"strings"
-	"time"
 )
 
 type GobcyAddInfo struct {
@@ -60,29 +57,6 @@ func newGobcy() (api gobcy.API) {
 	return
 }
 
-func newOmniClient() (client *rpcclient.Client, err error) {
-	if settings.IsBTCTestNet3 {
-		client, err = rpcclient.New(&rpcclient.ConnConfig{
-			HTTPPostMode: true,
-			DisableTLS:   true,
-			//rpc.blockchain.info
-			Host: "39.104.156.29:18332",
-			User: "omnicorerpc",
-			Pass: "abcd1234",
-		}, nil)
-	} else {
-		client, err = rpcclient.New(&rpcclient.ConnConfig{
-			HTTPPostMode: true,
-			DisableTLS:   true,
-			//rpc.blockchain.info
-			Host: "47.92.148.83:8332",
-			User: "omnicorerpc",
-			Pass: "abcd1234",
-		}, nil)
-	}
-	return
-}
-
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
 	bcy := newGobcy()
 	//讲私匙从wif格式转换为原始格式
@@ -94,8 +68,11 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	trans := gobcy.TempNewTX(fromAddress, toAddress, amount)
 	skel, err := bcy.NewTX(trans, false)
 	//Sign it locally
-	fmt.Println(skel.ToSign, privstr, len(skel.ToSign), len([]string{privstr}))
-	err = skel.Sign([]string{privstr})
+	var priv []string
+	for i := 0; i < len(skel.ToSign); i++ {
+		priv = append(priv, privstr)
+	}
+	err = skel.Sign(priv)
 	if err != nil {
 		glog.Error(err)
 		return "", err
@@ -110,22 +87,42 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 }
 
 func TransactionUsdt(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
-	client, err := newOmniClient()
+	url := fmt.Sprintf("http://39.104.156.29:8333/user/sendto?privkey=%s&fromaddress=%s&toaddress=%s&amount=%d",
+		privateKey, fromAddress, toAddress, amount)
+	resp, err := http.Get(url)
 	if err != nil {
-		glog.Error("error creating new btc client: ", err)
+		glog.Error("http请求失败", url, err)
 		return
 	}
-	defer client.Disconnect()
-	if settings.IsBTCTestNet3 {
-		tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), 1)
-	} else {
-		tx, err = client.OmniSend(fromAddress, toAddress, strconv.FormatFloat(float64(amount)/btcutil.SatoshiPerBitcoin, 'f', 8, 64), 31)
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取失败")
+		body, _ := ioutil.ReadAll(resp.Body)
+		glog.Error(url, string(body))
+		return
 	}
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		glog.Error(err)
-		return "", err
+		return
 	}
-	return
+	type sendResult struct {
+		Errcode int    `json:"errcode"`
+		Txid    string `json:"txid"`
+		Msg     string `json:"msg"`
+	}
+	var result sendResult
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		glog.Error("解析json字符串失败", err)
+		return
+	}
+	if result.Errcode != 0 {
+		err = errors.New("余额查询失败")
+		glog.Error("余额查询失败", result.Msg)
+		return
+	}
+	return result.Txid, nil
 }
 
 func GetBalanceBtc(address string) (balance int, err error) {
@@ -139,22 +136,39 @@ func GetBalanceBtc(address string) (balance int, err error) {
 }
 
 func GetBalanceUSDT(address string) (balance int, err error) {
-	client, err := newOmniClient()
+	url := fmt.Sprintf("http://39.104.156.29:8333/user/balance?address=%s", address)
+	resp, err := http.Get(url)
 	if err != nil {
-		glog.Error("error creating new btc client: ", err)
+		glog.Error("http请求失败", url, err)
 		return
 	}
-	defer client.Disconnect()
-	if settings.IsBTCTestNet3 {
-		balance, err = client.GetOmniBalance(address, 1)
-	} else {
-		balance, err = client.GetOmniBalance(address, 31)
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		err = errors.New("获取失败")
+		body, _ := ioutil.ReadAll(resp.Body)
+		glog.Error(url, string(body))
+		return
 	}
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		glog.Error(err)
 		return
 	}
-	return
+	type balanceResult struct {
+		Errcode int `json:"errcode"`
+		Amount  int `json:"amount"`
+	}
+	var result balanceResult
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		glog.Error("解析json字符串失败", err)
+		return
+	}
+	if result.Errcode != 0 {
+		err = errors.New("余额查询失败")
+		return
+	}
+	return result.Amount, nil
 }
 
 func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
@@ -193,38 +207,4 @@ func GetUsdtTransactions(address string, page int) (result []rpcclient.Omni_List
 		return
 	}
 	return ops.Transactions, nil
-}
-
-/*
-func GetUsdtTransactions(address string, count int, skip int) (result []rpcclient.Omni_ListtransactionResult, err error) {
-	client, err := newOmniClient()
-	if err != nil {
-		glog.Error("error creating new btc client: ", err)
-		return
-	}
-	defer client.Disconnect()
-	result, err = client.Omni_Listtransactions(address, count, skip)
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-	return result, err
-}
-*/
-func ImportPrivkey(privkey string, label string) (err error) {
-	client, err := newOmniClient()
-	if err != nil {
-		glog.Error("error creating new btc client: ", err)
-		return
-	}
-	defer client.Disconnect()
-	wif, err := btcutil.DecodeWIF(privkey)
-	if err != nil {
-		glog.Error(err)
-		return
-	}
-	fmt.Println(time.Now(), "私钥导入开始")
-	err = client.ImportPrivKeyRescan(wif, label, false)
-	fmt.Println(time.Now(), "私钥导入结束")
-	return err
 }

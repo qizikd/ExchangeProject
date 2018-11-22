@@ -202,11 +202,19 @@ func SendTo(c *gin.Context) {
 			})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"code":  0,
-			"txHex": txHex,
-			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
-		})
+		if settings.IsBTCTestNet3 {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  0,
+				"txHex": txHex,
+				"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  0,
+				"txHex": txHex,
+				"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc/tx/%s/", txHex),
+			})
+		}
 		return
 	case "USDT":
 		txHex, err := transfer.TransactionUsdt(fromAddress, toAddress, privKey, amount)
@@ -217,11 +225,19 @@ func SendTo(c *gin.Context) {
 			})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"code":  0,
-			"txHex": txHex,
-			"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
-		})
+		if settings.IsBTCTestNet3 {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  0,
+				"txHex": txHex,
+				"txUrl": fmt.Sprintf("https://live.blockcypher.com/btc-testnet/tx/%s/", txHex),
+			})
+		} else {
+			c.JSON(http.StatusOK, gin.H{
+				"code":  0,
+				"txHex": txHex,
+				"txUrl": fmt.Sprintf("https://omniexplorer.info/tx/%s/", txHex),
+			})
+		}
 		return
 	case "ETH":
 		txHex, err := transfer.TransactionEth(toAddress, privKey, int64(amount))

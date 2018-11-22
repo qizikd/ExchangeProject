@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"github.com/ExchangeProject/transfer"
 	"github.com/ExchangeProject/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -15,7 +14,6 @@ func main() {
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello, World!")
 	})
-	go transfer.SyncImportPrivkey()
 	router.GET("/user/create", user.New)
 	router.GET("/user/sendto", user.SendTo)
 	router.GET("/user/balance", user.Balance)
