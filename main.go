@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/ExchangeProject/transfer"
 	"github.com/ExchangeProject/user"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 func main() {
 	port := flag.String("port", "80", "Listen port")
 	flag.Parse()
+	go transfer.SyncImportPrivkey()
 	router := gin.Default()
 	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "Hello, World!")

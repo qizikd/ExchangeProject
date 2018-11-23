@@ -8,11 +8,13 @@ import (
 	"github.com/ExchangeProject/settings"
 	"github.com/blockcypher/gobcy"
 	"github.com/btcsuite/btcd/rpcclient"
+	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/golang/glog"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type GobcyAddInfo struct {
@@ -43,10 +45,11 @@ type GobcyTxRef struct {
 }
 
 func newGobcy() (api gobcy.API) {
+	const gobcyApi = "00e38e5e10984b1ba5982d350fdfe297"
 	if settings.IsBTCTestNet3 {
-		api = gobcy.API{"a861f6f339ef4a83a27f3b79ab0a202f", "btc", "test3"}
+		api = gobcy.API{gobcyApi, "btc", "test3"}
 	} else {
-		api = gobcy.API{"a861f6f339ef4a83a27f3b79ab0a202f", "btc", "main"}
+		api = gobcy.API{gobcyApi, "btc", "main"}
 	}
 	return
 }
@@ -250,4 +253,22 @@ func GetUsdtTransactions(address string, page int) (result []rpcclient.Omni_List
 		return
 	}
 	return ops.Transactions, nil
+}
+
+func ImportPrivkey(privkey string, label string) (err error) {
+	client, err := newOmniClient()
+	if err != nil {
+		glog.Error("error creating new btc client: ", err)
+		return
+	}
+	defer client.Disconnect()
+	wif, err := btcutil.DecodeWIF(privkey)
+	if err != nil {
+		glog.Error(err)
+		return
+	}
+	fmt.Println(time.Now(), "私钥导入开始")
+	err = client.ImportPrivKeyRescan(wif, label, false)
+	fmt.Println(time.Now(), "私钥导入结束")
+	return err
 }
