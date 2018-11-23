@@ -44,9 +44,9 @@ type GobcyTxRef struct {
 
 func newGobcy() (api gobcy.API) {
 	if settings.IsBTCTestNet3 {
-		api = gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
+		api = gobcy.API{"a861f6f339ef4a83a27f3b79ab0a202f", "btc", "test3"}
 	} else {
-		api = gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "main"}
+		api = gobcy.API{"a861f6f339ef4a83a27f3b79ab0a202f", "btc", "main"}
 	}
 	return
 }
