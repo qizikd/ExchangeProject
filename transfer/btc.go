@@ -51,6 +51,29 @@ func newGobcy() (api gobcy.API) {
 	return
 }
 
+func newOmniClient() (client *rpcclient.Client, err error) {
+	if settings.IsBTCTestNet3 {
+		client, err = rpcclient.New(&rpcclient.ConnConfig{
+			HTTPPostMode: true,
+			DisableTLS:   true,
+			//rpc.blockchain.info
+			Host: "39.104.156.29:18332",
+			User: "omnicorerpc",
+			Pass: "abcd1234",
+		}, nil)
+	} else {
+		client, err = rpcclient.New(&rpcclient.ConnConfig{
+			HTTPPostMode: true,
+			DisableTLS:   true,
+			//rpc.blockchain.info
+			Host: "47.92.148.83:8332",
+			User: "omnicorerpc",
+			Pass: "abcd1234",
+		}, nil)
+	}
+	return
+}
+
 func TransactionBtc(fromAddress string, toAddress string, privateKey string, amount int) (tx string, err error) {
 	bcy := newGobcy()
 	//讲私匙从wif格式转换为原始格式
@@ -130,6 +153,26 @@ func GetBalanceBtc(address string) (balance int, err error) {
 }
 
 func GetBalanceUSDT(address string) (balance int, err error) {
+	client, err := newOmniClient()
+	if err != nil {
+		glog.Error("error creating new btc client: ", err)
+		return
+	}
+	defer client.Disconnect()
+	if settings.IsBTCTestNet3 {
+		balance, err = client.GetOmniBalance(address, 1)
+	} else {
+		balance, err = client.GetOmniBalance(address, 31)
+	}
+	if err != nil {
+		glog.Error(err)
+		return
+	}
+	return
+}
+
+/*
+func GetBalanceUSDT(address string) (balance int, err error) {
 	url := fmt.Sprintf("http://39.104.156.29:8333/user/balance?address=%s", address)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -164,6 +207,7 @@ func GetBalanceUSDT(address string) (balance int, err error) {
 	}
 	return result.Amount, nil
 }
+*/
 
 func GetBtcTransactions(address string) (addr gobcy.Addr, err error) {
 	bcy := newGobcy()
