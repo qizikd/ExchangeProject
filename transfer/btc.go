@@ -42,12 +42,6 @@ type GobcyTxRef struct {
 	Received      string `json:"received"`
 }
 
-type OmniApiTxRef struct {
-	Address      string                                 `json:"address"`
-	Pages        int                                    `json:"pages"`
-	Transactions []rpcclient.Omni_ListtransactionResult `json:"transactions"`
-}
-
 func newGobcy() (api gobcy.API) {
 	if settings.IsBTCTestNet3 {
 		api = gobcy.API{"9184cf751ace44f090769b52643ade0b", "btc", "test3"}
@@ -199,6 +193,11 @@ func GetUsdtTransactions(address string, page int) (result []rpcclient.Omni_List
 	if err != nil {
 		glog.Error(err)
 		return
+	}
+	type OmniApiTxRef struct {
+		Address      string                                 `json:"address"`
+		Pages        int                                    `json:"pages"`
+		Transactions []rpcclient.Omni_ListtransactionResult `json:"transactions"`
 	}
 	var ops OmniApiTxRef
 	err = json.Unmarshal(body, &ops)
