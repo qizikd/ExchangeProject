@@ -138,8 +138,8 @@ func TransactionUsdt(fromAddress string, toAddress string, privateKey string, am
 		return
 	}
 	if result.Errcode != 0 {
-		err = errors.New("余额查询失败")
-		glog.Error("余额查询失败", result.Msg)
+		err = errors.New("发送交易失败")
+		glog.Error("发送交易失败", result.Msg)
 		return
 	}
 	return result.Txid, nil
