@@ -50,7 +50,7 @@ func newGobcy() (api gobcy.API) {
 	gobcyApis := []string{"9184cf751ace44f090769b52643ade0b", "269d9eb40f3048a6875b45e5aee017e9", "64cb8fe59b934d8d9df104fa8d59a85b",
 		"3dc9ad5c6d8449a499103de610ab12d8", "c2c26b546bf04f049ea06e7e539d868a"}
 	rand.Seed(time.Now().Unix())
-	apiIndex := rand.Intn(len(gobcyApis) - 1)
+	apiIndex := rand.Intn(len(gobcyApis))
 	var gobcyApi = gobcyApis[apiIndex]
 	if settings.IsBTCTestNet3 {
 		api = gobcy.API{gobcyApi, "btc", "test3"}
