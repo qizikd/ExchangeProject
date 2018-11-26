@@ -87,7 +87,11 @@ func TransactionBtc(fromAddress string, toAddress string, privateKey string, amo
 	bcy := newGobcy()
 	//讲私匙从wif格式转换为原始格式
 	privwif := privateKey
-	privb, _, _ := base58.CheckDecode(privwif)
+	privb, _, err := base58.CheckDecode(privwif)
+	if err != nil {
+		glog.Error(err)
+		return "", err
+	}
 	privstr := hex.EncodeToString(privb)
 	privstr = privstr[0 : len(privstr)-2]
 	//Post New TXSkeleton
