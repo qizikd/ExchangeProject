@@ -48,7 +48,11 @@ type GobcyTxRef struct {
 func newGobcy() (api gobcy.API) {
 	//随机获取一个GobcyApi key，防止用一个有请求限制
 	gobcyApis := []string{"9184cf751ace44f090769b52643ade0b", "269d9eb40f3048a6875b45e5aee017e9", "64cb8fe59b934d8d9df104fa8d59a85b",
-		"3dc9ad5c6d8449a499103de610ab12d8", "c2c26b546bf04f049ea06e7e539d868a"}
+		"3dc9ad5c6d8449a499103de610ab12d8", "c2c26b546bf04f049ea06e7e539d868a", "dd4b3e08a28347dfa222469472ad1a73"}
+	content, err := ioutil.ReadFile("gobcyApiToken.json")
+	if err == nil {
+		json.Unmarshal(content, &gobcyApis)
+	}
 	rand.Seed(time.Now().Unix())
 	apiIndex := rand.Intn(len(gobcyApis))
 	var gobcyApi = gobcyApis[apiIndex]
