@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/ExchangeProject/core/mysql"
+	"github.com/qizikd/ExchangeProject/core/mysql"
 )
 
 func AppIdIsValid(id string, secret string) (valid bool, err error) {

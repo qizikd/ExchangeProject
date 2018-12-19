@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"database/sql"
-	"github.com/ExchangeProject/settings"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang/glog"
+	"github.com/qizikd/ExchangeProject/settings"
 )
 
 func GetConn() (*sql.DB, error) {

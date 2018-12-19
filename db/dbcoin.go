@@ -3,7 +3,7 @@ package db
 import (
 	"errors"
 	"fmt"
-	"github.com/ExchangeProject/core/mysql"
+	"github.com/qizikd/ExchangeProject/core/mysql"
 )
 
 func AddCoinAddress(appid string, userid string, coin string, privatekey string, address string) (err error) {

@@ -2,12 +2,12 @@ package user
 
 import (
 	"fmt"
-	"github.com/ExchangeProject/db"
-	"github.com/ExchangeProject/mnemonic"
-	"github.com/ExchangeProject/settings"
-	"github.com/ExchangeProject/transfer"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
+	"github.com/qizikd/ExchangeProject/db"
+	"github.com/qizikd/ExchangeProject/mnemonic"
+	"github.com/qizikd/ExchangeProject/settings"
+	"github.com/qizikd/wallet/transfer"
 	"net/http"
 	"strconv"
 )
