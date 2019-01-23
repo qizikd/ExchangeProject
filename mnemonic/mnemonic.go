@@ -237,7 +237,7 @@ func GenerateBtcAccount(mnemonic string, p string) (myAccount AccountInfo, err e
 	//address_str := address_key.String()
 	//fmt.Println("private_str: ", private_str, "address_str: ", address_str)
 
-	myAccount.PulickKey = ""
+	myAccount.PulickKey = hex.EncodeToString(private_wif.SerializePubKey())
 	myAccount.PrivateKey = private_wif.String()
 	myAccount.Address = address_key.String()
 	//fmt.Printf("Address: %s,Public Key: %s, Private Key: %s\n", myAccount.Address, myAccount.PulickKey, myAccount.PrivateKey)

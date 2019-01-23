@@ -468,7 +468,7 @@ func BtcTransactions(c *gin.Context) {
 		return
 	}
 
-	txs, err := transfer.GetBtcTransactions(address)
+	txs, err := transfer.GetBtcTransactions(address, "btc")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
